@@ -1,0 +1,216 @@
+{
+  "version": "3",
+  "templates": [
+    {
+      "id": 1,
+      "type": 3,
+      "title": "IoTCombo",
+      "description": "For IoTGateway Combo Services",
+      "note": "Use for IoTGateway AllinOne service",
+      "categories": ["GW"],
+      "platform": "linux",
+      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/registry.png",
+      "repository": {
+        "url": "http://172.17.0.1:8080/templates",
+        "stackfile": "stacks/combo/docker-stack.yml"
+      },
+      "env": [
+        {
+          "name": "environment",
+          "label": "Environment",
+          "default": "dev"
+        },
+        {
+          "name": "HOST_URL",
+          "label": "Host Url",
+          "default": "http://10.0.0.200"
+        },
+        {
+          "name": "TV_HOST_URL",
+          "label": "TV Host Url",
+          "default": "http://tv.10.0.0.200.sslip.io"
+        },
+        {
+          "name": "GRPC_AUTH_ADDR",
+          "label": "GRPC Auth Address",
+          "default": "auth-svc:7080"
+        },
+        {
+          "name": "GRPC_LAYOUT_ADDR",
+          "label": "GRPC Layout Address",
+          "default": "layout-svc:7080"
+        },
+        {
+          "name": "GRPC_COMMUNICATE_ADDR",
+          "default": "communicate:7080"
+        },
+        {
+          "name": "GRPC_COM2SCADA_ADDR",
+          "default": "com2scada-svc:7080"
+        },
+        {
+          "name": "GRPC_EVENT_ADDR",
+          "default": "event-svc:7080"
+        },
+        {
+          "name": "GRPC_REPORT_ADDR",
+          "default": "report-svc:7080"
+        },
+        {
+          "name": "GRPC_PORT",
+          "default": "7080"
+        },
+        {
+          "name": "GRPC_REFLECT",
+          "default": "true"
+        },
+        {
+          "name": "IOT_MQTT_BROKER_URL",
+          "default": "tcp://mqtt-svc:1883"
+        },
+
+        {
+          "name": "IOT_MQTT_User",
+          "default": "emq"
+        },
+        {
+          "name": "IOT_MQTT_Password",
+          "default": "emqpassword"
+        },
+        {
+          "name": "IOT_MQTT_Gzip",
+          "default": "false"
+        },
+        {
+          "name": "API_PORT",
+          "default": "9080"
+        },
+        {
+          "name": "TRUSTED_PROXIES",
+          "default": "*"
+        },
+        {
+          "name": "GIN_MODE",
+          "default": "debug"
+        },
+        {
+          "name": "IS_DEBUG",
+          "default": "true"
+        },
+        {
+          "name": "MOCK_AUTH",
+          "default": "false"
+        },
+        {
+          "name": "LOG_LEVEL",
+          "default": "warning"
+        },
+        {
+          "name": "LOG_TARGET",
+          "default": "os"
+        },
+        {
+          "name": "TOPIC_CONNECT_ERR",
+          "default": "com/event/conn-err"
+        },
+        {
+          "name": "TOPIC_CHANGE_DATA",
+          "default": "com/event/change-data"
+        },
+        {
+          "name": "TOPIC_ROUTINE",
+          "default": "com/routine/data"
+        },
+        {
+          "name": "TOPIC_WRITE_DATA",
+          "default": "com/event/write-data"
+        },
+        {
+          "name": "MQTT_BrokerURL",
+          "default": "tcp://emqx:1883"
+        },
+        {
+          "name": "MQTT_Qos",
+          "default": "1"
+        },
+        {
+          "name": "MQTT_KeepAlive",
+          "default": "30"
+        },
+        {
+          "name": "MQTT_ConnectRetryDelay",
+          "default": "500"
+        },
+        {
+          "name": "MQTT_Debug",
+          "default": "true"
+        },
+        {
+          "name": "MQTT_IsAuth",
+          "default": "true"
+        },
+        {
+          "name": "MQTT_User",
+          "default": "emq"
+        },
+        {
+          "name": "MQTT_Password",
+          "default": "emqpassword"
+        },
+        {
+          "name": "MQTT_QueuePath",
+          "default": "/scada/data/queue/local"
+        },
+        {
+          "name": "MQTT_Gzip",
+          "default": "false"
+        },
+        {
+          "name": "GRPC_REFLECT",
+          "default": "false"
+        },
+        {
+          "name": "GRPC_COMMUNICATE_ADDRESS",
+          "default": "communicate:7080"
+        },
+        {
+          "name": "GRPC_LAYOUT_ADDRESS",
+          "default": "layout:7080"
+        },
+        {
+          "name": "GRPC_PORT",
+          "default": "7080"
+        },
+        {
+          "name": "API_DEBUG",
+          "default": "true"
+        },
+        {
+          "name": "CONFIGURATION_TOKEN",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": 3,
+      "title": "IoTGateway",
+      "description": "For IoTGateway Services",
+      "note": "Only use for IoTGateway Only",
+      "categories": ["GW"],
+      "platform": "linux",
+      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/registry.png",
+      "repository": {
+        "url": "http://iot-gateway.local:8080/templates",
+        "stackfile": "stacks/gateway/docker-compose.yml"
+      },
+      "env": [
+        {
+          "name": "MYSQL_DATABASE_PASSWORD",
+          "label": "Database root password",
+          "description": "Password used by the MySQL root user."
+        }
+      ]
+    }
+  ]
+}
