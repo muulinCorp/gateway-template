@@ -12,7 +12,7 @@
       "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/registry.png",
       "repository": {
         "url": "https://github.com/muulinCorp/gateway-template",
-        "stackfile": "stacks/combo/docker-stack.yml"
+        "stackfile": "stacks/combo/docker-stack.yaml"
       },
       "env": [
         {
@@ -202,7 +202,7 @@
       "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/registry.png",
       "repository": {
         "url": "https://github.com/muulinCorp/gateway-template",
-        "stackfile": "stacks/gateway/docker-compose.yml"
+        "stackfile": "stacks/gateway/docker-compose.yaml"
       },
       "env": [
         {
