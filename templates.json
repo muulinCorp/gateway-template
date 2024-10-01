@@ -34,155 +34,225 @@
         {
           "name": "GRPC_AUTH_ADDRESS",
           "label": "GRPC Auth Address",
-          "default": "auth-svc:7080"
+          "default": "auth-svc:7080",
+          "preset": "true"
         },
         {
           "name": "GRPC_LAYOUT_ADDRESS",
           "label": "GRPC Layout Address",
-          "default": "layout-svc:7080"
+          "default": "layout-svc:7080",
+          "preset": "true"
         },
         {
           "name": "GRPC_COMMUNICATE_ADDRESS",
-          "default": "communicate:7080"
+          "label": "GRPC Communicate Address",
+          "default": "communicate:7080",
+          "preset": "true"
         },
         {
           "name": "GRPC_COM2SCADA_ADDRESS",
-          "default": "com2scada-svc:7080"
+          "label": "GRPC Com2Scada Address",
+          "default": "com2scada-svc:7080",
+          "preset": "true"
         },
         {
           "name": "GRPC_EVENT_ADDRESS",
-          "default": "event-svc:7080"
+          "label": "GRPC Event Address",
+          "default": "event-svc:7080",
+          "preset": "true"
         },
         {
           "name": "GRPC_REPORT_ADDRESS",
-          "default": "report-svc:7080"
+          "label": "GRPC Report Address",
+          "default": "report-svc:7080",
+          "preset": "true"
         },
         {
           "name": "GRPC_PORT",
-          "default": "7080"
+          "label": "GRPC Port",
+          "default": "7080",
+          "preset": "true"
         },
         {
           "name": "GRPC_REFLECT",
-          "default": "true"
+          "label": "GRPC Reflect",
+          "default": "true",
+          "preset": "true"
         },
         {
           "name": "MQTT_BrokerURL",
-          "default": "tcp://emqx:1883"
+          "label": "MQTT Broker URL",
+          "default": "tcp://emqx:1883",
+          "preset": "true"
         },
         {
           "name": "MQTT_Qos",
-          "default": "1"
+          "label": "MQTT QoS",
+          "default": "1",
+          "preset": "true"
         },
         {
           "name": "MQTT_KeepAlive",
-          "default": "30"
+          "label": "MQTT Keep Alive",
+          "default": "30",
+          "preset": "true"
         },
         {
           "name": "MQTT_ConnectRetryDelay",
-          "default": "500"
+          "label": "MQTT Connect Retry Delay",
+          "default": "500",
+          "preset": "true"
         },
         {
           "name": "MQTT_Debug",
-          "default": "true"
+          "label": "MQTT Debug",
+          "default": "true",
+          "preset": "true"
         },
         {
           "name": "MQTT_IsAuth",
-          "default": "true"
+          "label": "MQTT is Auth",
+          "default": "false",
+          "preset": "true"
         },
         {
           "name": "MQTT_User",
-          "default": "emq"
+          "label": "MQTT User",
+          "default": "emq",
+          "preset": "true"
         },
         {
           "name": "MQTT_Password",
-          "default": "emqpassword"
+          "label": "MQTT Password",
+          "default": "emqpassword",
+          "preset": "true"
         },
         {
           "name": "MQTT_QueuePath",
-          "default": "/scada/data/queue/local"
+          "label": "MQTT Queue Path",
+          "default": "/scada/data/queue/local",
+          "preset": "true"
         },
         {
           "name": "MQTT_Gzip",
-          "default": "false"
+          "label": "MQTT Gzip",
+          "default": "false",
+          "preset": "true"
         },
         {
           "name": "API_PORT",
-          "default": "9080"
+          "label": "API Port",
+          "default": "9080",
+          "preset": "true"
         },
         {
           "name": "TRUSTED_PROXIES",
-          "default": "*"
+          "label": "Trusted Proxies",
+          "default": "*",
+          "preset": "true"
         },
         {
           "name": "GIN_MODE",
-          "default": "debug"
+          "label": "GIN Mode",
+          "default": "debug",
+          "preset": "true"
         },
         {
           "name": "IS_DEBUG",
-          "default": "true"
+          "label": "Is Debug",
+          "default": "true",
+          "preset": "true"
         },
         {
           "name": "MOCK_AUTH",
-          "default": "false"
+          "label": "Mock Auth",
+          "default": "false",
+          "preset": "true"
         },
         {
           "name": "LOG_LEVEL",
-          "default": "warning"
+          "label": "Log Level",
+          "default": "warning",
+          "preset": "true"
         },
         {
           "name": "LOG_TARGET",
-          "default": "os"
+          "label": "Log Target",
+          "default": "os",
+          "preset": "true"
         },
         {
           "name": "TOPIC_CONNECT_ERR",
-          "default": "com/event/conn-err"
+          "label": "TOPIC Connect Error",
+          "default": "com/event/conn-err",
+          "preset": "true"
         },
         {
           "name": "TOPIC_CHANGE_DATA",
-          "default": "com/event/change-data"
+          "label": "TOPIC Change Data",
+          "default": "com/event/change-data",
+          "preset": "true"
         },
         {
           "name": "TOPIC_ROUTINE_DATA",
-          "default": "com/routine/data"
+          "label": "TOPIC Routine Data",
+          "default": "com/routine/data",
+          "preset": "true"
         },
         {
           "name": "TOPIC_WRITE_DATA",
-          "default": "com/event/write-data"
+          "label": "TOPIC Write Data",
+          "default": "com/event/write-data",
+          "preset": "true"
         },
         {
           "name": "API_DEBUG",
-          "default": "true"
+          "label": "API Debug",
+          "default": "true",
+          "preset": "true"
         },
         {
-          "name": "DOCKER_INFLUXDB_INIT_MODE",
-          "default": "setup"
+          "name": "INFLUXDB_MODE",
+          "label": "Influxdb Mode",
+          "default": "setup",
+          "preset": "true"
         },
         {
-          "name": "DOCKER_INFLUXDB_INIT_USERNAME",
+          "name": "INFLUXDB_USERNAME",
+          "label": "Influxdb Username",
           "default": "myusername"
         },
         {
-          "name": "DOCKER_INFLUXDB_INIT_PASSWORD",
+          "name": "INFLUXDB_PASSWORD",
+          "label": "Influxdb Password",
           "default": "passwordpasswordpassword"
         },
         {
-          "name": "DOCKER_INFLUXDB_INIT_ORG",
-          "default": "myorg"
+          "name": "INFLUXDB_ORG",
+          "label": "Influxdb Orgnization",
+          "default": "muulin",
+          "preset": "true"
         },
         {
-          "name": "DOCKER_INFLUXDB_INIT_BUCKET",
-          "default": "mybucket"
+          "name": "INFLUXDB_BUCKET",
+          "label": "Influxdb Bucket",
+          "default": "datas"
         },
         {
-          "name": "DOCKER_INFLUXDB_INIT_ADMIN_TOKEN",
-          "default": "mytoken"
+          "name": "INFLUXDB_ADMIN_TOKEN",
+          "label": "Influxdb Admin Token",
+          "default": "mytoken",
+          "preset": "true"
         },
         {
           "name": "INFLUXDB_URL",
-          "default": "http://influxdb:8086"
+          "label": "Influxdb URL",
+          "default": "http://influxdb:8086",
+          "preset": "true"
         },
         {
           "name": "CONFIGURATION_TOKEN",
+          "label": "Configuration Token",
           "default": ""
         }
       ]
