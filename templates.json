@@ -18,7 +18,8 @@
         {
           "name": "environment",
           "label": "Environment",
-          "default": "dev"
+          "default": "dev",
+          "preset": "true"
         },
         {
           "name": "HOST_URL",
@@ -31,29 +32,29 @@
           "default": "http://tv.10.0.0.200.sslip.io"
         },
         {
-          "name": "GRPC_AUTH_ADDR",
+          "name": "GRPC_AUTH_ADDRESS",
           "label": "GRPC Auth Address",
           "default": "auth-svc:7080"
         },
         {
-          "name": "GRPC_LAYOUT_ADDR",
+          "name": "GRPC_LAYOUT_ADDRESS",
           "label": "GRPC Layout Address",
           "default": "layout-svc:7080"
         },
         {
-          "name": "GRPC_COMMUNICATE_ADDR",
+          "name": "GRPC_COMMUNICATE_ADDRESS",
           "default": "communicate:7080"
         },
         {
-          "name": "GRPC_COM2SCADA_ADDR",
+          "name": "GRPC_COM2SCADA_ADDRESS",
           "default": "com2scada-svc:7080"
         },
         {
-          "name": "GRPC_EVENT_ADDR",
+          "name": "GRPC_EVENT_ADDRESS",
           "default": "event-svc:7080"
         },
         {
-          "name": "GRPC_REPORT_ADDR",
+          "name": "GRPC_REPORT_ADDRESS",
           "default": "report-svc:7080"
         },
         {
@@ -63,67 +64,6 @@
         {
           "name": "GRPC_REFLECT",
           "default": "true"
-        },
-        {
-          "name": "IOT_MQTT_BROKER_URL",
-          "default": "tcp://mqtt-svc:1883"
-        },
-
-        {
-          "name": "IOT_MQTT_User",
-          "default": "emq"
-        },
-        {
-          "name": "IOT_MQTT_Password",
-          "default": "emqpassword"
-        },
-        {
-          "name": "IOT_MQTT_Gzip",
-          "default": "false"
-        },
-        {
-          "name": "API_PORT",
-          "default": "9080"
-        },
-        {
-          "name": "TRUSTED_PROXIES",
-          "default": "*"
-        },
-        {
-          "name": "GIN_MODE",
-          "default": "debug"
-        },
-        {
-          "name": "IS_DEBUG",
-          "default": "true"
-        },
-        {
-          "name": "MOCK_AUTH",
-          "default": "false"
-        },
-        {
-          "name": "LOG_LEVEL",
-          "default": "warning"
-        },
-        {
-          "name": "LOG_TARGET",
-          "default": "os"
-        },
-        {
-          "name": "TOPIC_CONNECT_ERR",
-          "default": "com/event/conn-err"
-        },
-        {
-          "name": "TOPIC_CHANGE_DATA",
-          "default": "com/event/change-data"
-        },
-        {
-          "name": "TOPIC_ROUTINE",
-          "default": "com/routine/data"
-        },
-        {
-          "name": "TOPIC_WRITE_DATA",
-          "default": "com/event/write-data"
         },
         {
           "name": "MQTT_BrokerURL",
@@ -166,24 +106,80 @@
           "default": "false"
         },
         {
-          "name": "GRPC_REFLECT",
+          "name": "API_PORT",
+          "default": "9080"
+        },
+        {
+          "name": "TRUSTED_PROXIES",
+          "default": "*"
+        },
+        {
+          "name": "GIN_MODE",
+          "default": "debug"
+        },
+        {
+          "name": "IS_DEBUG",
+          "default": "true"
+        },
+        {
+          "name": "MOCK_AUTH",
           "default": "false"
         },
         {
-          "name": "GRPC_COMMUNICATE_ADDRESS",
-          "default": "communicate:7080"
+          "name": "LOG_LEVEL",
+          "default": "warning"
         },
         {
-          "name": "GRPC_LAYOUT_ADDRESS",
-          "default": "layout:7080"
+          "name": "LOG_TARGET",
+          "default": "os"
         },
         {
-          "name": "GRPC_PORT",
-          "default": "7080"
+          "name": "TOPIC_CONNECT_ERR",
+          "default": "com/event/conn-err"
+        },
+        {
+          "name": "TOPIC_CHANGE_DATA",
+          "default": "com/event/change-data"
+        },
+        {
+          "name": "TOPIC_ROUTINE_DATA",
+          "default": "com/routine/data"
+        },
+        {
+          "name": "TOPIC_WRITE_DATA",
+          "default": "com/event/write-data"
         },
         {
           "name": "API_DEBUG",
           "default": "true"
+        },
+        {
+          "name": "DOCKER_INFLUXDB_INIT_MODE",
+          "default": "setup"
+        },
+        {
+          "name": "DOCKER_INFLUXDB_INIT_USERNAME",
+          "default": "myusername"
+        },
+        {
+          "name": "DOCKER_INFLUXDB_INIT_PASSWORD",
+          "default": "passwordpasswordpassword"
+        },
+        {
+          "name": "DOCKER_INFLUXDB_INIT_ORG",
+          "default": "myorg"
+        },
+        {
+          "name": "DOCKER_INFLUXDB_INIT_BUCKET",
+          "default": "mybucket"
+        },
+        {
+          "name": "DOCKER_INFLUXDB_INIT_ADMIN_TOKEN",
+          "default": "mytoken"
+        },
+        {
+          "name": "INFLUXDB_URL",
+          "default": "http://influxdb:8086"
         },
         {
           "name": "CONFIGURATION_TOKEN",

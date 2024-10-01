@@ -37,8 +37,14 @@ services:
     restart: always
     image: influxdb:2.7-alpine
     pull_policy: missing
-    env_file:
-      - stack.env
+    environment:
+    - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_MODE}
+    - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
+    - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+    - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_INIT_ORG}
+    - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+    - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+    - INFLUXDB_URL=${INFLUXDB_URL}
     volumes:
       - /gw/data/influxdb:/var/lib/influxdb2:rw
   telegraf:
@@ -47,8 +53,14 @@ services:
     pull_policy: missing
     depends_on:
       - influxdb
-    env_file:
-      - stack.env
+    environment:
+    - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_MODE}
+    - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
+    - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+    - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_INIT_ORG}
+    - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+    - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+    - INFLUXDB_URL=${INFLUXDB_URL}
     volumes:
       - /gw/configs/influxdb/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
   nginx:
@@ -98,7 +110,7 @@ services:
     - LOG_TARGET=${LOG_TARGET}
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
-    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDR}
+    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
     - API_PORT=${API_PORT}
     - API_DEBUG=${IS_DEBUG}
     - MOCK_AUTH=${MOCK_AUTH}
@@ -133,7 +145,7 @@ services:
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     - GRPC_Auth_Address=${GRPC_AUTH_ADDR}
-    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDR}
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
     links:
     - "communicate:communicate-svc"
     volumes:
@@ -147,7 +159,7 @@ services:
     - CONFIG_FILE=/etc/config.yml
     - DOWNLOAD_CONF_DIR=/frontend/
     - GRPC_AUTH_ADDRESS=${GRPC_AUTH_ADDR}
-    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDR}
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     - LOG_LEVEL=${LOG_LEVEL}
@@ -177,21 +189,21 @@ services:
     - LOG_TARGET=${LOG_TARGET}
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
-    - TOPIC_ROUTINE=${TOPIC_ROUTINE}
+    - TOPIC_ROUTINE=${TOPIC_ROUTINE_DATA}
     - TOPIC_CHANGE_DATA=${TOPIC_CHANGE_DATA}
     - TOPIC_CONNECT_ERR=${TOPIC_CONNECT_ERR}
     - TOPIC_WRITE_DATA=${TOPIC_WRITE_DATA}
-    - MQTT_BrokerURL=${IOT_MQTT_BROKER_URL}
+    - MQTT_BrokerURL=${MQTT_BrokerURL}
     - MQTT_ClientID=com2scada
     - MQTT_Qos=1
     - MQTT_KeepAlive=30
     - MQTT_ConnectRetryDelay=500
     - MQTT_Debug=${IS_DEBUG}
     - MQTT_IsAuth=true
-    - MQTT_User=${IOT_MQTT_User}
-    - MQTT_Password=${IOT_MQTT_Password}
+    - MQTT_User=${MQTT_User}
+    - MQTT_Password=${MQTT_Password}
     - MQTT_QueuePath=/etc/queue/local
-    - MQTT_Gzip=${IOT_MQTT_Gzip}
+    - MQTT_Gzip=${MQTT_Gzip}
     - GIN_MODE=${GIN_MODE}
     - API_PORT=${API_PORT}
     - MOCK_AUTH=${MOCK_AUTH}
@@ -199,8 +211,8 @@ services:
     - TRUSTED_PROXIES=${TRUSTED_PROXIES}
     - GRPC_Auth_Address=${GRPC_AUTH_ADDR}
     - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDR}
-    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDR}
-    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDR}
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
     links:
     - "communicate:communicate-svc"
     - "emqx:mqtt-svc"
@@ -219,7 +231,7 @@ services:
     - API_DEBUG=${IS_DEBUG}
     - TRUSTED_PROXIES=${TRUSTED_PROXIES}
     - GRPC_Auth_Address=${GRPC_AUTH_ADDR}
-    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDR}
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/que/:/etc/que/
@@ -236,8 +248,8 @@ services:
     - MOCK_AUTH=${MOCK_AUTH}
     - API_DEBUG=${IS_DEBUG}
     - TRUSTED_PROXIES=${TRUSTED_PROXIES}
-    - GRPC_Auth_Address=${GRPC_AUTH_ADDR}
-    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDR}
+    - GRPC_Auth_Address=${GRPC_AUTH_ADDRESS}
+    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
     - DIR=/etc/reports/
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
@@ -262,7 +274,7 @@ services:
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     - WARN_CACHE_DURATION=-1s
-    - GRPC_Auth_Address=${GRPC_AUTH_ADDR}
+    - GRPC_Auth_Address=${GRPC_AUTH_ADDRESS}
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/sql/:/sql/
@@ -290,9 +302,9 @@ services:
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     - GRPC_Auth_Address=${GRPC_AUTH_ADDR}
-    - GRPC_COM2SCADA_ADDRESS=${GRPC_COM2SCADA_ADDR}
-    - GRPC_REPORT_ADDRESS=${GRPC_REPORT_ADDR}
-    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDR}
+    - GRPC_COM2SCADA_ADDRESS=${GRPC_COM2SCADA_ADDRESS}
+    - GRPC_REPORT_ADDRESS=${GRPC_REPORT_ADDRESS}
+    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/rubase/:/etc/rubase/
@@ -309,9 +321,9 @@ services:
     - LOG_TARGET=${LOG_TARGET}
     - SERVICE=alarm
     - CONFIG_FILE=/etc/config.yml
-    - GRPC_COM2SCADA_ADDRESS=${GRPC_COM2SCADA_ADDR}
-    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDR}
-    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDR}
+    - GRPC_COM2SCADA_ADDRESS=${GRPC_COM2SCADA_ADDRESS}
+    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
+    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
   web-svc:
@@ -340,9 +352,9 @@ services:
   #     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
   #     - GRPC_REFLECT=${GRPC_REFLECT}
   #     - MQTT_BrokerURL=tcp://emqx:1883
-  #     - ROUTINE_TOPIC=com/routine/data
-  #     - WRITE_EVENT_TOPIC=com/event-test/write-data
-  #     - MQTT_Topic=com/routine/data&com/event-test/write-data
+  #     - ROUTINE_TOPIC=${TOPIC_ROUTINE_DATA}
+  #     - WRITE_EVENT_TOPIC=${TOPIC_WRITE_DATA}
+  #     - MQTT_Topic=com/routine/data&com/event/write-data
   #     - MQTT_ClientID=com2mc
   #     - MQTT_Qos=1
   #     - MQTT_KeepAlive=30
@@ -421,7 +433,7 @@ services:
     - S6_KEEP_ENV=1
     - SERVICE=timing
     - CONFIG_FILE=/etc/config.yml
-    - GRPC_COMMUNICATE_ADDRESS=communicate:7080
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
     - TIMING_SETTING_FILE=/etc/timing.yml
     - TIMING_DURATION=1h
     - LOG_LEVEL=${LOG_LEVEL}
@@ -523,7 +535,7 @@ services:
       - CONFIGURATION_TOKEN=${CONFIGURATION_TOKEN}
       - VERSION_CONFIG_PATH=/scada/data/store
       - MAX_FILE_COUNT=10
-      - GRPC_CONFIGURATION_ADDRESS="rpc.hvac-cloud.org:81"
+      - GRPC_CONFIGURATION_ADDRESS=rpc.hvac-cloud.org:81
       - SERVICE=config-sync
       - CONFIG_FILE=/scada/conf/config.yml
       - LOG_LEVEL=debug
