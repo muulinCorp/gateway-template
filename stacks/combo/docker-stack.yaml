@@ -11,18 +11,8 @@ services:
     - /gw/data/emqx:/opt/emqx/data
     - /gw/etc/emqx:/opt/emqx/etc
     - /gw/log/emqx:/opt/emqx/log
-  redis-comm:
-    restart: always
-    container_name: redis-comm
-    image: redis:alpine
-    pull_policy: missing
-    ports:
-    - 6380:6379
-    volumes:
-     - /gw/data/redis-comm:/data
   redis:
     restart: always
-    container_name: redis
     image: redis:alpine
     pull_policy: missing
     ports:
@@ -65,7 +55,6 @@ services:
       - /gw/configs/influxdb/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
   nginx:
     restart: always
-    container_name: nginx
     image: nginx:stable-alpine-slim
     ports:
     - 80:80
@@ -81,7 +70,6 @@ services:
 # Server Components
   files-svc:
     restart: always
-    container_name: files
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/files:main
     volumes:
     - /gw/data/reports/report:/reports
