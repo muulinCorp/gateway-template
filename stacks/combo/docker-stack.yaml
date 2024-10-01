@@ -107,8 +107,7 @@ services:
     volumes:
     - /gw/data/sql/:/sql/
     - /gw/configs/conf/config.yml:/etc/config.yml
-    - /gw/configs/conf/privatekey.pem:/etc/privatekey.pem
-    - /gw/configs/conf/publickey.pem:/etc/publickey.pem
+    - /gw/configs/conf/cert:/cert
   schedule-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/schedule:main
@@ -429,7 +428,7 @@ services:
     - GRPC_REFLECT=${GRPC_REFLECT}
     volumes:
     - /gw/configs/backend/Cron/config.yml:/etc/timing.yml
-    - /gw/configs/conf/config-comm.yml:/etc/config.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
   avg2display:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/avg2display:dev
@@ -448,7 +447,7 @@ services:
     - GRPC_REFLECT=${GRPC_REFLECT}
     volumes:
     - /gw/configs/backend/Cron/config.yml:/etc/avg_setting.yml
-    - /gw/configs/conf/config-comm.yml:/etc/config.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
   layout-tv-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:dev
@@ -473,7 +472,7 @@ services:
     - TRUSTED_PROXIES=*
     volumes:
     - /gw/configs/frontend:/frontend
-    - /gw/configs/conf/config-comm.yml:/conf/config.yml
+    - /gw/configs/conf/config.yml:/conf/config.yml
   tvsse-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:dev
@@ -502,7 +501,7 @@ services:
     - API_DEBUG=${API_DEBUG}
     - TRUSTED_PROXIES=*
     volumes:
-    - /gw/configs/conf/config-comm.yml:/etc/config.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/tvsse:/scada/data/queue
   tv-svc:
     restart: always
