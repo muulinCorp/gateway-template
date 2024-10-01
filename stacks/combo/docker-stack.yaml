@@ -8,9 +8,9 @@ services:
     - 1883:1883
     - 18083:18083
     volumes:
-    - ./data/emqx:/opt/emqx/data
-    - ./etc/emqx:/opt/emqx/etc
-    - ./log/emqx:/opt/emqx/log
+    - /gw/data/emqx:/opt/emqx/data
+    - /gw/etc/emqx:/opt/emqx/etc
+    - /gw/log/emqx:/opt/emqx/log
   redis-comm:
     restart: always
     container_name: redis-comm
@@ -19,7 +19,7 @@ services:
     ports:
     - 6380:6379
     volumes:
-     - ./data/redis-comm:/data
+     - /gw/data/redis-comm:/data
   redis:
     restart: always
     container_name: redis
@@ -28,7 +28,7 @@ services:
     ports:
     - 6379:6379
     volumes:
-     - ./data/redis:/data
+     - /gw/data/redis:/data
     deploy:
       resources:
         reservations:
@@ -38,9 +38,9 @@ services:
     image: influxdb:2.7-alpine
     pull_policy: missing
     env_file:
-      - ./configs/influxdb/.env
+      - /gw/configs/influxdb/.env
     volumes:
-      - ./data/influxdb:/var/lib/influxdb2:rw
+      - /gw/data/influxdb:/var/lib/influxdb2:rw
   telegraf:
     restart: always
     image: telegraf:1.30-alpine
@@ -48,9 +48,9 @@ services:
     depends_on:
       - influxdb
     env_file:
-      - ./configs/influxdb/.env
+      - /gw/configs/influxdb/.env
     volumes:
-      - ./configs/influxdb/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /gw/configs/influxdb/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
   nginx:
     restart: always
     container_name: nginx
@@ -63,16 +63,16 @@ services:
     - web-svc
     - com2scada-svc
     volumes:
-    - ./configs/frontend/Image:/var/www/html/image
-    - ./configs/nginx/conf.d:/etc/nginx/conf.d
-    - ./configs/nginx/nginx.conf:/etc/nginx/nginx.conf
+    - /gw/configs/frontend/Image:/var/www/html/image
+    - /gw/configs/nginx/conf.d:/etc/nginx/conf.d
+    - /gw/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
 # Server Components
   files-svc:
     restart: always
     container_name: files
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/files:main
     volumes:
-    - ./data/reports/report:/reports
+    - /gw/data/reports/report:/reports
   gateway-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/gateway:dev
@@ -105,10 +105,10 @@ services:
     - GIN_MODE=${GIN_MODE}
     - TRUSTED_PROXIES=${TRUSTED_PROXIES}
     volumes:
-    - ./data/sql/:/sql/
-    - ./configs/conf/config.yml:/etc/config.yml
-    - ./configs/conf/privatekey.pem:/etc/privatekey.pem
-    - ./configs/conf/publickey.pem:/etc/publickey.pem
+    - /gw/data/sql/:/sql/
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/configs/conf/privatekey.pem:/etc/privatekey.pem
+    - /gw/configs/conf/publickey.pem:/etc/publickey.pem
   schedule-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/schedule:main
@@ -137,8 +137,8 @@ services:
     links:
     - "communicate:communicate-svc"
     volumes:
-    - ./configs/conf/scm/:/etc/scm/
-    - ./configs/conf/config.yml:/etc/config.yml
+    - /gw/configs/conf/scm/:/etc/scm/
+    - /gw/configs/conf/config.yml:/etc/config.yml
   layout-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:dev
@@ -161,8 +161,8 @@ services:
     - API_PORT=${API_PORT}
     - TRUSTED_PROXIES=*
     volumes:
-    - ./configs/frontend:/frontend
-    - ./configs/conf/config.yml:/etc/config.yml
+    - /gw/configs/frontend:/frontend
+    - /gw/configs/conf/config.yml:/etc/config.yml
   com2scada-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:dev
@@ -205,7 +205,7 @@ services:
     - "communicate:communicate-svc"
     - "emqx:mqtt-svc"
     volumes:
-    - ./configs/conf/config.yml:/etc/config.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
   queue-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/queue:main
@@ -221,8 +221,8 @@ services:
     - GRPC_Auth_Address=${GRPC_AUTH_ADDR}
     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDR}
     volumes:
-    - ./configs/conf/config.yml:/etc/config.yml
-    - ./data/que/:/etc/que/
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/data/que/:/etc/que/
   report-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/report:dev
@@ -242,8 +242,8 @@ services:
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     volumes:
-    - ./configs/conf/config.yml:/etc/config.yml
-    - ./data/reports/:/etc/reports/
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/data/reports/:/etc/reports/
   event-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/event:dev
@@ -264,8 +264,8 @@ services:
     - WARN_CACHE_DURATION=-1s
     - GRPC_Auth_Address=${GRPC_AUTH_ADDR}
     volumes:
-    - ./configs/conf/config.yml:/etc/config.yml
-    - ./data/sql/:/sql/
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/data/sql/:/sql/
   rubase-alert-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/rubase:dev
@@ -294,8 +294,8 @@ services:
     - GRPC_REPORT_ADDRESS=${GRPC_REPORT_ADDR}
     - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDR}
     volumes:
-    - ./configs/conf/config.yml:/etc/config.yml
-    - ./data/rubase/:/etc/rubase/
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/data/rubase/:/etc/rubase/
   alarm-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/alarm:dev
@@ -313,7 +313,7 @@ services:
     - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDR}
     - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDR}
     volumes:
-    - ./configs/conf/config.yml:/etc/config.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
   web-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web:main
@@ -407,10 +407,10 @@ services:
       - MQTT_Gzip=${MQTT_Gzip}
       - GRPC_REFLECT=${GRPC_REFLECT}
     volumes:
-      - ./configs/backend/DataSource:/scada/conf/com
-      - ./configs/conf/config.yml:/scada/conf/config.yml
-      - ./data/communicate:/scada/data/queue
-      - ./log/communicate:/scada/data/log
+      - /gw/configs/backend/DataSource:/scada/conf/com
+      - /gw/configs/conf/config.yml:/scada/conf/config.yml
+      - /gw/data/communicate:/scada/data/queue
+      - /gw/log/communicate:/scada/data/log
   timing:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:dev
@@ -428,8 +428,8 @@ services:
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     volumes:
-    - ./configs/backend/Cron/config.yml:/etc/timing.yml
-    - ./configs/conf/config-comm.yml:/etc/config.yml
+    - /gw/configs/backend/Cron/config.yml:/etc/timing.yml
+    - /gw/configs/conf/config-comm.yml:/etc/config.yml
   avg2display:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/avg2display:dev
@@ -447,8 +447,8 @@ services:
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     volumes:
-    - ./configs/backend/Cron/config.yml:/etc/avg_setting.yml
-    - ./configs/conf/config-comm.yml:/etc/config.yml
+    - /gw/configs/backend/Cron/config.yml:/etc/avg_setting.yml
+    - /gw/configs/conf/config-comm.yml:/etc/config.yml
   layout-tv-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:dev
@@ -472,8 +472,8 @@ services:
     - API_PORT=${API_PORT}
     - TRUSTED_PROXIES=*
     volumes:
-    - ./configs/frontend:/frontend
-    - ./configs/conf/config-comm.yml:/conf/config.yml
+    - /gw/configs/frontend:/frontend
+    - /gw/configs/conf/config-comm.yml:/conf/config.yml
   tvsse-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:dev
@@ -502,8 +502,8 @@ services:
     - API_DEBUG=${API_DEBUG}
     - TRUSTED_PROXIES=*
     volumes:
-    - ./configs/conf/config-comm.yml:/etc/config.yml
-    - ./data/tvsse:/scada/data/queue
+    - /gw/configs/conf/config-comm.yml:/etc/config.yml
+    - /gw/data/tvsse:/scada/data/queue
   tv-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:main
@@ -545,7 +545,7 @@ services:
       - BACKEND_CONFIG_PATH=/scada/configs/backend
       - RESTART_MQTT_TOPIC=com/config-sync/restart
     volumes:
-      - ./configs/backend:/scada/configs/backend
-      - ./configs/frontend:/scada/configs/frontend
-      - ./configs/conf/config.yml:/scada/conf/config.yml
-      - ./data/config-sync:/scada/data
+      - /gw/configs/backend:/scada/configs/backend
+      - /gw/configs/frontend:/scada/configs/frontend
+      - /gw/configs/conf/config.yml:/scada/conf/config.yml
+      - /gw/data/config-sync:/scada/data
