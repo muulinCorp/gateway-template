@@ -38,7 +38,7 @@ services:
     image: influxdb:2.7-alpine
     pull_policy: missing
     env_file:
-      - /gw/configs/influxdb/.env
+      - stack.env
     volumes:
       - /gw/data/influxdb:/var/lib/influxdb2:rw
   telegraf:
@@ -48,7 +48,7 @@ services:
     depends_on:
       - influxdb
     env_file:
-      - /gw/configs/influxdb/.env
+      - stack.env
     volumes:
       - /gw/configs/influxdb/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
   nginx:
