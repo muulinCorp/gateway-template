@@ -55,7 +55,7 @@ services:
       - /gw/configs/influxdb/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
   nginx:
     restart: always
-    image: nginx:stable-alpine-slim
+    image: openresty/openresty:1.21.4.1-0-alpine
     ports:
     - 80:80
     depends_on:
@@ -63,6 +63,8 @@ services:
     - files-svc
     - web-svc
     - com2scada-svc
+    environment:
+    - TV_HOST_URL=${TV_HOST_URL}
     volumes:
     - /gw/configs/frontend/Image:/var/www/html/image
     - /gw/configs/nginx/conf.d:/etc/nginx/conf.d
@@ -508,8 +510,8 @@ services:
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:main
     pull_policy: missing
     environment:
-    - VITE_SSE_URL=${TV_HOST_URL}
-    - VITE_LAYOUT_URL=${TV_HOST_URL}/igw/tv
+    - VITE_SSE_URL=http://${TV_HOST_URL}
+    - VITE_LAYOUT_URL=http://${TV_HOST_URL}/igw/tv
     - VITE_TV_TITLE=瓦城
     - VITE_TV_SUBTITLE=監控系統
     - VITE_TV_LOGO=TTFB_company_logo.svg
