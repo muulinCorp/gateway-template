@@ -207,6 +207,25 @@ services:
     - "emqx:mqtt-svc"
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
+  mbproxy-svc:
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbproxy:dev
+    depends_on:
+    - com2scada-svc
+    - event-svc
+    environment:
+    - LOG_LEVEL=${LOG_LEVEL}
+    - LOG_TARGET=${LOG_TARGET}
+    - SERVICE=mbproxy
+    - CONFIG_FILE=/etc/config.yml
+    - PROXY_CONF=/etc/proxies.yml
+    - GRPC_COM2SCADA_ADDRESS=${GRPC_COM2SCADA_ADDRESS}
+    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    volumes:
+    - ./configs/conf/config-comm.yml:/etc/config.yml
+    - ./configs/backend/Proxy/proxies.yml:/etc/proxies.yml
+    ports:
+    - 502:502
   queue-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/queue:main

@@ -18,7 +18,7 @@
         {
           "name": "environment",
           "label": "Environment",
-          "default": "dev",
+          "default": "production",
           "preset": true
         },
         {
@@ -29,7 +29,7 @@
         {
           "name": "TV_HOST_URL",
           "label": "TV Host Url",
-          "default": "http://tv.10.0.0.200.sslip.io"
+          "default": "tv.10.0.0.200.sslip.io"
         },
         {
           "name": "GRPC_AUTH_ADDRESS",
@@ -247,8 +247,7 @@
         {
           "name": "INFLUXDB_URL",
           "label": "Influxdb URL",
-          "default": "http://influxdb:8086",
-          "preset": true
+          "default": "http://influxdb:8086"
         },
         {
           "name": "CONFIGURATION_TOKEN",
@@ -260,8 +259,8 @@
     {
       "id": 2,
       "type": 3,
-      "title": "IoTCombo",
-      "description": "For IoTGateway Combo Services",
+      "title": "IoTGateway",
+      "description": "For IoTGateway Gateway Services",
       "note": "Use for IoTGateway AllinOne service",
       "categories": ["GW"],
       "platform": "linux",
@@ -466,6 +465,11 @@
           "label": "API Debug",
           "default": "true",
           "preset": true
+        },
+        {
+          "name": "MAC_ADDRESS",
+          "label": "Mac Address",
+          "default": "aa:bb:cc:dd:ee"
         },
         {
           "name": "CONFIGURATION_TOKEN",

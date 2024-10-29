@@ -35,43 +35,43 @@ services:
     - /gw/configs/nginx/conf.d:/etc/nginx/conf.d
     - /gw/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
 # Gateway Components
-  # com2mc:
-  #   networks:
-  #     default:
-  #       mac_address: 9e:7c:d0:14:aa:f3
-  #   restart: always
-  #   depends_on:
-  #     - emqx
-  #   image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2mc:dev
-  #   pull_policy: missing
-  #   environment:
-  #     - GRPC_PORT=${GRPC_PORT}
-  #     - SERVICE=com2mc
-  #     - CONFIG_FILE=/scada/conf/config.yml
-  #     - MLM_CONF_PATH=/scada/conf/mlm/
-  #     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
-  #     - GRPC_REFLECT=${GRPC_REFLECT}
-  #     - MQTT_BrokerURL=tcp://emqx:1883
-  #     - ROUTINE_TOPIC=${TOPIC_ROUTINE_DATA}
-  #     - WRITE_EVENT_TOPIC=${TOPIC_WRITE_DATA}
-  #     - MQTT_Topic=com/routine/data&com/event/write-data
-  #     - MQTT_ClientID=com2mc
-  #     - MQTT_Qos=1
-  #     - MQTT_KeepAlive=30
-  #     - MQTT_ConnectRetryDelay=500
-  #     - MQTT_Group=scada
-  #     - MQTT_Debug=true
-  #     - MQTT_IsAuth=true
-  #     - MQTT_User=emq
-  #     - MQTT_Password=emqpassword
-  #     - MQTT_QueuePath=${MQTT_QueuePath}
-  #     - MQTT_Gzip=false
-  #     - LOG_LEVEL=debug
-  #     - LOG_TARGET=os
-  #   volumes:
-  #     - ./configs/backend/mlm:/scada/conf/mlm
-  #     - ./configs/conf/config.yml:/scada/conf/config.yml
-  #     - ./data/com2mc:/scada/data
+  com2mc:
+    networks:
+      default:
+        mac_address: ${MAC_ADDRESS}
+    restart: always
+    depends_on:
+      - emqx
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2mc:dev
+    pull_policy: missing
+    environment:
+      - GRPC_PORT=${GRPC_PORT}
+      - SERVICE=com2mc
+      - CONFIG_FILE=/scada/conf/config.yml
+      - MLM_CONF_PATH=/scada/conf/mlm/
+      - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+      - GRPC_REFLECT=${GRPC_REFLECT}
+      - MQTT_BrokerURL=tcp://emqx:1883
+      - ROUTINE_TOPIC=${TOPIC_ROUTINE_DATA}
+      - WRITE_EVENT_TOPIC=${TOPIC_WRITE_DATA}
+      - MQTT_Topic=com/routine/data&com/event/write-data
+      - MQTT_ClientID=com2mc
+      - MQTT_Qos=1
+      - MQTT_KeepAlive=30
+      - MQTT_ConnectRetryDelay=500
+      - MQTT_Group=scada
+      - MQTT_Debug=true
+      - MQTT_IsAuth=true
+      - MQTT_User=emq
+      - MQTT_Password=emqpassword
+      - MQTT_QueuePath=${MQTT_QueuePath}
+      - MQTT_Gzip=false
+      - LOG_LEVEL=debug
+      - LOG_TARGET=os
+    volumes:
+      - ./configs/backend/mlm:/scada/conf/mlm
+      - ./configs/conf/config.yml:/scada/conf/config.yml
+      - ./data/com2mc:/scada/data
   tvgw-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvgw:main
