@@ -28,8 +28,6 @@ services:
     image: nginx:stable-alpine-slim
     ports:
     - 80:80
-    depends_on:
-    - gateway-svc
     volumes:
     - /gw/configs/frontend/Image:/var/www/html/image
     - /gw/configs/nginx/conf.d:/etc/nginx/conf.d
