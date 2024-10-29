@@ -75,7 +75,7 @@ services:
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvgw:main
     pull_policy: missing
     links:
-    - layout-tv-svc:scada-layout-svc
+    - layout-tv-svc:layout
     - tvsse-svc:tv-sse-svc
   communicate:
     restart: always
@@ -219,11 +219,18 @@ services:
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:main
     pull_policy: missing
     environment:
-    - VITE_SSE_URL=${TV_HOST_URL}
-    - VITE_LAYOUT_URL=${TV_HOST_URL}/igw/tv
-    - VITE_TV_TITLE=瓦城
-    - VITE_TV_SUBTITLE=監控系統
-    - VITE_TV_LOGO=TTFB_company_logo.svg
+    - VITE_SSE_URL=http://${TV_HOST_URL}
+    - VITE_LAYOUT_URL=http://${TV_HOST_URL}/igw/tv
+    - VITE_TV_TITLE=${TV_TITLE}
+    - VITE_TV_SUBTITLE=${TV_SUBTITLE}
+    - VITE_TV_LOGO=${TV_LOGO}
+  config-watcher:
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:main
+    pull_policy: missing
+    environment:
+     - MQTT_BrokerURL=tcp://emqx:1883
+     - RESTART_TOPIC=com/config-sync/restart
   config-sync:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:main

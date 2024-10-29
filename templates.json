@@ -287,6 +287,21 @@
           "default": "tv.10.0.0.200.sslip.io"
         },
         {
+          "name": "TV_TITLE",
+          "label": "TV Title",
+          "default": "沐霖"
+        },
+        {
+          "name": "TV_SUBTITLE",
+          "label": "TV SubTitle",
+          "default": "監控系統"
+        },
+        {
+          "name": "TV_LOGO",
+          "label": "TV Logo",
+          "default": "logo.svg"
+        },
+        {
           "name": "GRPC_AUTH_ADDRESS",
           "label": "GRPC Auth Address",
           "default": "auth-svc:7080",
