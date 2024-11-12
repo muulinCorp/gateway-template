@@ -59,17 +59,17 @@ services:
       - MQTT_ConnectRetryDelay=500
       - MQTT_Group=scada
       - MQTT_Debug=true
-      - MQTT_IsAuth=true
+      - MQTT_IsAuth=false
       - MQTT_User=emq
       - MQTT_Password=emqpassword
       - MQTT_QueuePath=${MQTT_QueuePath}
       - MQTT_Gzip=false
-      - LOG_LEVEL=debug
-      - LOG_TARGET=os
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
     volumes:
-      - ./configs/backend/mlm:/scada/conf/mlm
-      - ./configs/conf/config.yml:/scada/conf/config.yml
-      - ./data/com2mc:/scada/data
+      - /gw/configs/backend/mlm:/scada/conf/mlm
+      - /gw/configs/conf/config.yml:/scada/conf/config.yml
+      - /gw/data/com2mc:/scada/data
   tvgw-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvgw:main
@@ -105,7 +105,7 @@ services:
       - EVENT_WRITE_DATA_TOPIC=${TOPIC_WRITE_DATA}
       - EVENT_CONN_ERR_TOPIC=${TOPIC_CONNECT_ERR}
       - LOG_LEVEL=${LOG_LEVEL}
-      - LOG_TARGET=os
+      - LOG_TARGET=${LOG_TARGET}
       - MQTT_BrokerURL=${MQTT_BrokerURL}
       - MQTT_Qos=${MQTT_Qos}
       - MQTT_KeepAlive=${MQTT_KeepAlive}
@@ -153,7 +153,7 @@ services:
     - AVG_SETTING_FILE=/etc/avg_setting.yml
     - CACHE_DB=avg2display
     - AVG_DURATION=5s
-    - LOG_LEVEL=debug
+    - LOG_LEVEL=${LOG_LEVEL}
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     volumes:
@@ -200,7 +200,7 @@ services:
     - MQTT_Qos=${MQTT_Qos}
     - MQTT_KeepAlive=${MQTT_KeepAlive}
     - MQTT_ConnectRetryDelay=${MQTT_ConnectRetryDelay}
-    - MQTT_Debug=${MQTT_Debug}
+    - MQTT_Debug=false
     - MQTT_IsAuth=${MQTT_IsAuth}
     - MQTT_User=${MQTT_User}
     - MQTT_Password=${MQTT_Password}
@@ -211,6 +211,8 @@ services:
     - MOCK_AUTH=${MOCK_AUTH}
     - API_DEBUG=${API_DEBUG}
     - TRUSTED_PROXIES=*
+    - LOG_LEVEL=${LOG_LEVEL}
+    - LOG_TARGET=${LOG_TARGET}
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/tvsse:/scada/data/queue
@@ -243,8 +245,8 @@ services:
       - GRPC_CONFIGURATION_ADDRESS=rpc.hvac-cloud.org:81
       - SERVICE=config-sync
       - CONFIG_FILE=/scada/conf/config.yml
-      - LOG_LEVEL=debug
-      - LOG_TARGET=os
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
       - MQTT_BrokerURL=${MQTT_BrokerURL}
       - MQTT_ClientID=config-sync
       - MQTT_Qos=2
