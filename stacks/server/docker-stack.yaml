@@ -133,8 +133,6 @@ services:
     - GRPC_REFLECT=${GRPC_REFLECT}
     - GRPC_Auth_Address=${GRPC_AUTH_ADDRESS}
     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
-    links:
-    - "communicate:communicate-svc"
     volumes:
     - /gw/configs/conf/scm/:/etc/scm/
     - /gw/configs/conf/config.yml:/etc/config.yml
