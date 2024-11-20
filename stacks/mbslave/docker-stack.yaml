@@ -1,0 +1,7 @@
+services:
+  mbslave:
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbslave:main
+    restart: always
+    ports:
+    - 502:502
+    entrypoint: /app

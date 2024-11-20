@@ -335,6 +335,45 @@ services:
     - VITE_SSE_URL=${HOST_URL}
     - VITE_API_HOST=${HOST_URL}/web
     - VITE_LAYOUT_URL=${HOST_URL}/web/layout/tv
+  tvsse-svc:
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:dev
+    pull_policy: missing
+    environment:
+    - SERVICE=scada-tv-sse
+    - CONFIG_FILE=/etc/config.yml
+    - GRPC_PORT=${GRPC_PORT}
+    - GRPC_REFLECT=${GRPC_REFLECT}
+    - TOPIC_CHANGE_DATA=${TOPIC_CHANGE_DATA}
+    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
+    - MQTT_BrokerURL=${MQTT_BrokerURL}
+    - MQTT_ClientID=scada_tv
+    - MQTT_Qos=${MQTT_Qos}
+    - MQTT_KeepAlive=${MQTT_KeepAlive}
+    - MQTT_ConnectRetryDelay=${MQTT_ConnectRetryDelay}
+    - MQTT_Debug=false
+    - MQTT_IsAuth=${MQTT_IsAuth}
+    - MQTT_User=${MQTT_User}
+    - MQTT_Password=${MQTT_Password}
+    - MQTT_QueuePath=${MQTT_QueuePath}
+    - MQTT_Gzip=${MQTT_Gzip}
+    - GIN_MODE=${GIN_MODE}
+    - API_PORT=${API_PORT}
+    - MOCK_AUTH=${MOCK_AUTH}
+    - API_DEBUG=${API_DEBUG}
+    - TRUSTED_PROXIES=*
+    - LOG_LEVEL=${LOG_LEVEL}
+    - LOG_TARGET=${LOG_TARGET}
+    volumes:
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/data/tvsse:/scada/data/queue
+  config-watcher:
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:main
+    pull_policy: missing
+    environment:
+     - MQTT_BrokerURL=${MQTT_BrokerURL}
+     - RESTART_TOPIC=com/config-sync/restart
   config-sync:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:main

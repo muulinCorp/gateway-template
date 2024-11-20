@@ -740,6 +740,20 @@
           "default": ""
         }
       ]
+    },
+    {
+      "id": 4,
+      "type": 3,
+      "title": "IoTMbslave",
+      "description": "For IoTGateway ModbusSalve Services",
+      "note": "Use for IoTGateway service",
+      "categories": ["GW"],
+      "platform": "linux",
+      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/registry.png",
+      "repository": {
+        "url": "https://github.com/muulinCorp/gateway-template",
+        "stackfile": "stacks/mbslave/docker-stack.yaml"
+      }
     }
   ]
 }
