@@ -715,8 +715,7 @@
         {
           "name": "INFLUXDB_ORG",
           "label": "Influxdb Orgnization",
-          "default": "muulin",
-          "preset": true
+          "default": "muulin"
         },
         {
           "name": "INFLUXDB_BUCKET",
