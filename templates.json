@@ -230,8 +230,7 @@
         {
           "name": "INFLUXDB_ORG",
           "label": "Influxdb Orgnization",
-          "default": "muulin",
-          "preset": true
+          "default": "muulin"
         },
         {
           "name": "INFLUXDB_BUCKET",
@@ -724,8 +723,7 @@
         {
           "name": "INFLUXDB_ADMIN_TOKEN",
           "label": "Influxdb Admin Token",
-          "default": "mytoken",
-          "preset": true
+          "default": "mytoken"
         },
         {
           "name": "INFLUXDB_URL",
