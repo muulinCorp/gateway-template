@@ -1,3 +1,4 @@
+# IoTGateway
 services:
 # Infras
   emqx:
@@ -30,7 +31,7 @@ services:
     - 80:80
     volumes:
     - /gw/configs/frontend/Image:/var/www/html/image
-    - /gw/configs/nginx/conf.d:/etc/nginx/conf.d
+    - /gw/configs/nginx/sites-enabled:/etc/nginx/conf.d
     - /gw/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
 # Gateway Components
   com2mc:
@@ -194,6 +195,7 @@ services:
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
     - TOPIC_CHANGE_DATA=${TOPIC_CHANGE_DATA}
+    - TOPIC_WRITE_DATA=${TOPIC_WRITE_DATA}
     - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
     - MQTT_BrokerURL=${MQTT_BrokerURL}
     - MQTT_ClientID=scada_tv
@@ -215,7 +217,9 @@ services:
     - LOG_TARGET=${LOG_TARGET}
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
-    - /gw/data/tvsse:/scada/data/queue
+    - /gw/data/tvsse:/scada/data/queue'
+    links:
+    - layout-tv-svc:layout-svc
   tv-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:main
