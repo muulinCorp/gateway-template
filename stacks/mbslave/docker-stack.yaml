@@ -1,7 +1,17 @@
 services:
-  mbslave:
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbslave:main
+  register:
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/register:v2.0.0
     restart: always
     ports:
-    - 502:502
-    entrypoint: /app
+      - 502:1502
+    environment:
+      - SERVICE=register
+      - SQL_DB_PATH=/scada/data/register.db
+      - MB_TIMEOUT=5m
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+      - CONFIG_FILE=/etc/config.yml
+      - MODBUS_PORT=1502
+    volumes:
+      - /gw/configs/conf/config.yml:/etc/config.yml
+      - /gw/data/register:/scada/data

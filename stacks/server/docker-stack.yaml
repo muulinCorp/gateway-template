@@ -71,7 +71,7 @@ services:
 # Server Components
   files-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/files:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/files:v2.0.0
     volumes:
     - /gw/data/reports/report:/reports
   gateway-svc:
@@ -88,7 +88,7 @@ services:
     - rubase-alert-svc
   auth-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/auth:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/auth:v2.0.0
     environment:
     - S6_KEEP_ENV=1
     - SERVICE=auth
@@ -111,7 +111,7 @@ services:
     - /gw/configs/conf/cert:/cert
   schedule-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/schedule:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/schedule:v2.0.0
     depends_on:
     - auth-svc
     environment:
@@ -139,7 +139,7 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
   layout-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.0.0
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
@@ -163,7 +163,7 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
   com2scada-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:v2.0.0
     depends_on:
     - auth-svc
     - layout-svc
@@ -202,7 +202,7 @@ services:
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
   mbproxy-svc:
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbproxy:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbproxy:v2.0.0
     depends_on:
     - com2scada-svc
     - event-svc
@@ -222,7 +222,7 @@ services:
     - 502:502
   queue-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/queue:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/queue:v2.0.0
     environment:
     - SERVICE=scada-queue
     - QUEUE_PATH=/etc/que/
@@ -234,12 +234,13 @@ services:
     - TRUSTED_PROXIES=${TRUSTED_PROXIES}
     - GRPC_Auth_Address=${GRPC_AUTH_ADDRESS}
     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/que/:/etc/que/
   report-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/report:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/report:v2.0.0
     environment:
     - SERVICE=scada-report
     - USAGE=scada
@@ -260,7 +261,7 @@ services:
     - /gw/data/reports/:/etc/reports/
   event-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/event:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/event:v2.0.0
     depends_on:
     - auth-svc
     environment:
@@ -282,7 +283,7 @@ services:
     - /gw/data/sql/:/sql/
   rubase-alert-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/rubase:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/rubase:v2.0.0
     depends_on:
     - auth-svc
     - event-svc
@@ -312,7 +313,7 @@ services:
     - /gw/data/rubase/:/etc/rubase/
   alarm-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/alarm:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/alarm:v2.0.0
     depends_on:
     - auth-svc
     - event-svc
@@ -330,7 +331,7 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
   ems-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:v2.0.0
     environment:
     - USAGE=scada
     - LOG_LEVEL=${LOG_LEVEL}
@@ -359,7 +360,7 @@ services:
     - /gw/data/ems:/scada/ems
   web-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web:v2.0.0
     pull_policy: missing
     environment:
     - VITE_SSE_URL=${HOST_URL}
@@ -367,7 +368,7 @@ services:
     - VITE_LAYOUT_URL=${HOST_URL}/web/layout/tv
   tvsse-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.0.0
     pull_policy: missing
     environment:
     - SERVICE=scada-tv-sse
@@ -399,14 +400,14 @@ services:
     - /gw/data/tvsse:/scada/data/queue
   config-watcher:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:v2.0.0
     pull_policy: missing
     environment:
      - MQTT_BrokerURL=${MQTT_BrokerURL}
      - RESTART_TOPIC=com/config-sync/restart
   config-sync:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:v2.0.0
     pull_policy: missing
     environment:
       - environment=${environment}

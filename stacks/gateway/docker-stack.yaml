@@ -41,7 +41,7 @@ services:
     restart: always
     depends_on:
       - emqx
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2mc:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2mc:v2.0.0
     pull_policy: missing
     environment:
       - GRPC_PORT=${GRPC_PORT}
@@ -84,7 +84,7 @@ services:
     depends_on:
       - emqx
       - redis
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.0.0
     pull_policy: missing
     ports:
     - 7080:7080
@@ -124,7 +124,7 @@ services:
       - /gw/log/communicate:/scada/data/log
   timing:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:v2.0.0
     pull_policy: missing
     depends_on:
     - communicate
@@ -143,7 +143,7 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
   avg2display:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/avg2display:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/avg2display:v2.0.0
     pull_policy: missing
     depends_on:
     - communicate
@@ -162,7 +162,7 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
   layout-tv-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.0.0
     pull_policy: missing
     environment:
     - SERVICE=scada_layout
@@ -187,7 +187,7 @@ services:
     - /gw/configs/conf/config.yml:/conf/config.yml
   tvsse-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:dev
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.0.0
     pull_policy: missing
     environment:
     - SERVICE=scada-tv-sse
@@ -222,7 +222,7 @@ services:
     - layout-tv-svc:layout-svc
   tv-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:v2.0.0
     pull_policy: missing
     environment:
     - VITE_SSE_URL=http://${TV_HOST_URL}
@@ -230,16 +230,60 @@ services:
     - VITE_TV_TITLE=${TV_TITLE}
     - VITE_TV_SUBTITLE=${TV_SUBTITLE}
     - VITE_TV_LOGO=${TV_LOGO}
+  monitor:
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.0.0
+    restart: always
+    environment:
+      - SERVICE=monitor
+      - ERROR_CHECK_DURATION=30s
+      - SQL_DB_PATH=/scada/data/monitor.db
+      - ALERT_CONF_PATH=/scada/conf/temperatureLimit.yaml
+      - OFFSET_CONF_PATH=/scada/conf/offset.yaml
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+      - CONFIG_FILE=/etc/config.yml
+      - GRPC_COMM_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+      - MQTT_Topic=${TOPIC_CHANGE_DATA}
+      - MQTT_BrokerURL=${MQTT_BrokerURL}
+      - MQTT_ClientID=alert-monitor
+      - MQTT_Qos=${MQTT_Qos}
+      - MQTT_KeepAlive=${MQTT_KeepAlive}
+      - MQTT_ConnectRetryDelay=${MQTT_ConnectRetryDelay}
+      - MQTT_Group=scada
+      - MQTT_Debug=${MQTT_Debug}
+      - MQTT_IsAuth=${MQTT_IsAuth}
+      - MQTT_User=${MQTT_User}
+      - MQTT_Password=${MQTT_Password}
+    volumes:
+      - /gw/configs/conf/config.yml:/etc/config.yml
+      - /gw/configs/backend/Monitor:/scada/conf
+      - /gw/data/monitor:/scada/data
+  register:
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/register:v2.0.0
+    restart: always
+    ports:
+      - 1502:1502
+    environment:
+      - SERVICE=register
+      - SQL_DB_PATH=/scada/data/register.db
+      - MB_TIMEOUT=5m
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+      - CONFIG_FILE=/etc/config.yml
+      - MODBUS_PORT=1502
+    volumes:
+      - /gw/configs/conf/config.yml:/etc/config.yml
+      - /gw/data/register:/scada/data
   config-watcher:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:v2.0.0
     pull_policy: missing
     environment:
      - MQTT_BrokerURL=tcp://emqx:1883
      - RESTART_TOPIC=com/config-sync/restart
   config-sync:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:main
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:v2.0.0
     pull_policy: missing
     environment:
       - environment=${environment}
