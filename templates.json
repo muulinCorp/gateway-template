@@ -740,6 +740,252 @@
     {
       "id": 4,
       "type": 3,
+      "title": "IoTServer-Windows",
+      "description": "For IoTGateway Server Services",
+      "note": "Use for IoTGateway service",
+      "categories": ["GW"],
+      "platform": "linux",
+      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/registry.png",
+      "repository": {
+        "url": "https://github.com/muulinCorp/gateway-template",
+        "stackfile": "stacks/server/docker-stack-windows.yaml"
+      },
+      "env": [
+        {
+          "name": "environment",
+          "label": "Environment",
+          "default": "production",
+          "preset": true
+        },
+        {
+          "name": "HOST_URL",
+          "label": "Host Url",
+          "default": "http://10.0.0.200"
+        },
+        {
+          "name": "GRPC_AUTH_ADDRESS",
+          "label": "GRPC Auth Address",
+          "default": "auth-svc:7080",
+          "preset": true
+        },
+        {
+          "name": "GRPC_LAYOUT_ADDRESS",
+          "label": "GRPC Layout Address",
+          "default": "layout-svc:7080",
+          "preset": true
+        },
+        {
+          "name": "GRPC_COMMUNICATE_ADDRESS",
+          "label": "GRPC Communicate Address",
+          "default": "communicate:7080"
+        },
+        {
+          "name": "GRPC_COM2SCADA_ADDRESS",
+          "label": "GRPC Com2Scada Address",
+          "default": "com2scada-svc:7080",
+          "preset": true
+        },
+        {
+          "name": "GRPC_EVENT_ADDRESS",
+          "label": "GRPC Event Address",
+          "default": "event-svc:7080",
+          "preset": true
+        },
+        {
+          "name": "GRPC_REPORT_ADDRESS",
+          "label": "GRPC Report Address",
+          "default": "report-svc:7080",
+          "preset": true
+        },
+        {
+          "name": "GRPC_PORT",
+          "label": "GRPC Port",
+          "default": "7080",
+          "preset": true
+        },
+        {
+          "name": "GRPC_REFLECT",
+          "label": "GRPC Reflect",
+          "default": "true",
+          "preset": true
+        },
+        {
+          "name": "MQTT_BrokerURL",
+          "label": "MQTT Broker URL",
+          "default": "tcp://emqx:1883"
+        },
+        {
+          "name": "MQTT_Qos",
+          "label": "MQTT QoS",
+          "default": "1",
+          "preset": true
+        },
+        {
+          "name": "MQTT_KeepAlive",
+          "label": "MQTT Keep Alive",
+          "default": "30",
+          "preset": true
+        },
+        {
+          "name": "MQTT_ConnectRetryDelay",
+          "label": "MQTT Connect Retry Delay",
+          "default": "500",
+          "preset": true
+        },
+        {
+          "name": "MQTT_Debug",
+          "label": "MQTT Debug",
+          "default": "true",
+          "preset": true
+        },
+        {
+          "name": "MQTT_IsAuth",
+          "label": "MQTT is Auth",
+          "default": "false",
+          "preset": true
+        },
+        {
+          "name": "MQTT_User",
+          "label": "MQTT User",
+          "default": "emq",
+          "preset": true
+        },
+        {
+          "name": "MQTT_Password",
+          "label": "MQTT Password",
+          "default": "emqpassword",
+          "preset": true
+        },
+        {
+          "name": "MQTT_QueuePath",
+          "label": "MQTT Queue Path",
+          "default": "/scada/data/queue/local",
+          "preset": true
+        },
+        {
+          "name": "MQTT_Gzip",
+          "label": "MQTT Gzip",
+          "default": "false",
+          "preset": true
+        },
+        {
+          "name": "API_PORT",
+          "label": "API Port",
+          "default": "9080",
+          "preset": true
+        },
+        {
+          "name": "TRUSTED_PROXIES",
+          "label": "Trusted Proxies",
+          "default": "*",
+          "preset": true
+        },
+        {
+          "name": "GIN_MODE",
+          "label": "GIN Mode",
+          "default": "debug",
+          "preset": true
+        },
+        {
+          "name": "IS_DEBUG",
+          "label": "Is Debug",
+          "default": "true",
+          "preset": true
+        },
+        {
+          "name": "MOCK_AUTH",
+          "label": "Mock Auth",
+          "default": "false",
+          "preset": true
+        },
+        {
+          "name": "LOG_LEVEL",
+          "label": "Log Level",
+          "default": "warning",
+          "preset": true
+        },
+        {
+          "name": "LOG_TARGET",
+          "label": "Log Target",
+          "default": "os",
+          "preset": true
+        },
+        {
+          "name": "TOPIC_CONNECT_ERR",
+          "label": "TOPIC Connect Error",
+          "default": "com/event/conn-err",
+          "preset": true
+        },
+        {
+          "name": "TOPIC_CHANGE_DATA",
+          "label": "TOPIC Change Data",
+          "default": "com/event/change-data",
+          "preset": true
+        },
+        {
+          "name": "TOPIC_ROUTINE_DATA",
+          "label": "TOPIC Routine Data",
+          "default": "com/routine/data",
+          "preset": true
+        },
+        {
+          "name": "TOPIC_WRITE_DATA",
+          "label": "TOPIC Write Data",
+          "default": "com/event/write-data",
+          "preset": true
+        },
+        {
+          "name": "API_DEBUG",
+          "label": "API Debug",
+          "default": "true",
+          "preset": true
+        },
+        {
+          "name": "INFLUXDB_MODE",
+          "label": "Influxdb Mode",
+          "default": "setup",
+          "preset": true
+        },
+        {
+          "name": "INFLUXDB_USERNAME",
+          "label": "Influxdb Username",
+          "default": "myusername"
+        },
+        {
+          "name": "INFLUXDB_PASSWORD",
+          "label": "Influxdb Password",
+          "default": "passwordpasswordpassword"
+        },
+        {
+          "name": "INFLUXDB_ORG",
+          "label": "Influxdb Orgnization",
+          "default": "muulin"
+        },
+        {
+          "name": "INFLUXDB_BUCKET",
+          "label": "Influxdb Bucket",
+          "default": "datas"
+        },
+        {
+          "name": "INFLUXDB_ADMIN_TOKEN",
+          "label": "Influxdb Admin Token",
+          "default": "mytoken"
+        },
+        {
+          "name": "INFLUXDB_URL",
+          "label": "Influxdb URL",
+          "default": "http://influxdb:8086"
+        },
+        {
+          "name": "CONFIGURATION_TOKEN",
+          "label": "Configuration Token",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": 3,
       "title": "IoTMbslave",
       "description": "For IoTGateway ModbusSalve Services",
       "note": "Use for IoTGateway service",
