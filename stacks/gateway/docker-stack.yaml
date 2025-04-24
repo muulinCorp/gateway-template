@@ -71,13 +71,6 @@ services:
       - /gw/configs/backend/mlm:/scada/conf/mlm
       - /gw/configs/conf/config.yml:/scada/conf/config.yml
       - /gw/data/com2mc:/scada/data
-  tvgw-svc:
-    restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvgw:main
-    pull_policy: missing
-    links:
-    - layout-tv-svc:layout
-    - tvsse-svc:tv-sse-svc
   communicate:
     restart: always
     privileged: true
@@ -162,7 +155,7 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
   layout-tv-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.0.1
     pull_policy: missing
     environment:
     - SERVICE=scada_layout
@@ -231,13 +224,16 @@ services:
     - VITE_TV_SUBTITLE=${TV_SUBTITLE}
     - VITE_TV_LOGO=${TV_LOGO}
   monitor:
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.0.2
     restart: always
     environment:
       - SERVICE=monitor
-      - ERROR_CHECK_DURATION=30s
+      - DEFAULT_DURATION_PERIODIC=1m
+      - ALERT_CHECK_DURATION=30s
+      - OFFSET_PROCESS_DURATION=20s
       - SQL_DB_PATH=/scada/data/monitor.db
-      - ALERT_CONF_PATH=/scada/conf/temperatureLimit.yaml
+      - PERIODIC_SEND_CONF_PATH=/scada/conf/periodicSend.yaml
+      - ALERT_CONF_PATH=/scada/conf/alertReport.yaml
       - OFFSET_CONF_PATH=/scada/conf/offset.yaml
       - LOG_LEVEL=${LOG_LEVEL}
       - LOG_TARGET=${LOG_TARGET}

@@ -223,7 +223,7 @@ services:
     - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
     volumes:
-    - ./configs/conf/config-comm.yml:/etc/config.yml
+    - ./configs/conf/config.yml:/etc/config.yml
     - ./configs/backend/Proxy/proxies.yml:/etc/proxies.yml
     ports:
     - 502:502
@@ -567,13 +567,16 @@ services:
       - VITE_TV_SUBTITLE=監控系統
       - VITE_TV_LOGO=TTFB_company_logo.svg
   monitor:
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.0.2
     restart: always
     environment:
       - SERVICE=monitor
-      - ERROR_CHECK_DURATION=30s
+      - DEFAULT_DURATION_PERIODIC=1m
+      - ALERT_CHECK_DURATION=30s
+      - OFFSET_PROCESS_DURATION=20s
       - SQL_DB_PATH=/scada/data/monitor.db
-      - ALERT_CONF_PATH=/scada/conf/temperatureLimit.yaml
+      - PERIODIC_SEND_CONF_PATH=/scada/conf/periodicSend.yaml
+      - ALERT_CONF_PATH=/scada/conf/alertReport.yaml
       - OFFSET_CONF_PATH=/scada/conf/offset.yaml
       - LOG_LEVEL=${LOG_LEVEL}
       - LOG_TARGET=${LOG_TARGET}

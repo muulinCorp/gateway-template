@@ -216,7 +216,7 @@ services:
     - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
     volumes:
-    - ./configs/conf/config-comm.yml:/etc/config.yml
+    - ./configs/conf/config.yml:/etc/config.yml
     - ./configs/backend/Proxy/proxies.yml:/etc/proxies.yml
     ports:
     - 502:502
