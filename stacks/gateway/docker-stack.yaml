@@ -231,10 +231,12 @@ services:
       - DEFAULT_DURATION_PERIODIC=1m
       - ALERT_CHECK_DURATION=30s
       - OFFSET_PROCESS_DURATION=20s
+      - FIELD_PULSE_PROCESS_DURATION=10s
       - SQL_DB_PATH=/scada/data/monitor.db
       - PERIODIC_SEND_CONF_PATH=/scada/conf/periodicSend.yaml
       - ALERT_CONF_PATH=/scada/conf/alertReport.yaml
       - OFFSET_CONF_PATH=/scada/conf/offset.yaml
+      - FIELD_PULSE_CONF_PATH=/scada/conf/fieldPulse.yaml
       - LOG_LEVEL=${LOG_LEVEL}
       - LOG_TARGET=${LOG_TARGET}
       - CONFIG_FILE=/etc/config.yml
