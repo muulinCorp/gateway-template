@@ -2,6 +2,9 @@
 services:
 # Infras
   emqx:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.10
     restart: always
     image: emqx:5.4.1
     pull_policy: missing
@@ -13,6 +16,9 @@ services:
     - /gw/etc/emqx:/opt/emqx/etc
     - /gw/log/emqx:/opt/emqx/log
   redis:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.11
     restart: always
     image: redis:alpine
     pull_policy: missing
@@ -33,15 +39,19 @@ services:
     - /gw/configs/frontend/Image:/var/www/html/image
     - /gw/configs/nginx/sites-enabled:/etc/nginx/conf.d
     - /gw/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.12
 # Gateway Components
   com2mc:
     networks:
-      default:
+      gateway_network:
         mac_address: ${MAC_ADDRESS}
+        ipv4_address: 172.20.1.21
     restart: always
     depends_on:
       - emqx
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2mc:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2mc:v2.2.0
     pull_policy: missing
     environment:
       - GRPC_PORT=${GRPC_PORT}
@@ -54,6 +64,7 @@ services:
       - ROUTINE_TOPIC=${TOPIC_ROUTINE_DATA}
       - WRITE_EVENT_TOPIC=${TOPIC_WRITE_DATA}
       - MQTT_Topic=com/routine/data&com/event/write-data
+      - MQTT_ThrottledQueue_Duration=30s
       - MQTT_ClientID=com2mc
       - MQTT_Qos=1
       - MQTT_KeepAlive=30
@@ -64,6 +75,9 @@ services:
       - MQTT_User=emq
       - MQTT_Password=emqpassword
       - MQTT_QueuePath=${MQTT_QueuePath}
+      - MQTT_Store_Enable=true
+      - MQTT_Store_Type=file
+      - MQTT_Store_Path=/scada/data/store
       - MQTT_Gzip=false
       - LOG_LEVEL=${LOG_LEVEL}
       - LOG_TARGET=${LOG_TARGET}
@@ -72,12 +86,15 @@ services:
       - /gw/configs/conf/config.yml:/scada/conf/config.yml
       - /gw/data/com2mc:/scada/data
   communicate:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.22
     restart: always
     privileged: true
     depends_on:
       - emqx
       - redis
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.2.0
     pull_policy: missing
     ports:
     - 7080:7080
@@ -116,8 +133,11 @@ services:
       - /gw/data/communicate:/scada/data/queue
       - /gw/log/communicate:/scada/data/log
   timing:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.23
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:v2.2.0
     pull_policy: missing
     depends_on:
     - communicate
@@ -135,8 +155,11 @@ services:
     - /gw/configs/backend/Cron/config.yml:/etc/timing.yml
     - /gw/configs/conf/config.yml:/etc/config.yml
   avg2display:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.24
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/avg2display:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/avg2display:v2.2.0
     pull_policy: missing
     depends_on:
     - communicate
@@ -154,8 +177,11 @@ services:
     - /gw/configs/backend/Cron/config.yml:/etc/avg_setting.yml
     - /gw/configs/conf/config.yml:/etc/config.yml
   layout-tv-svc:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.25
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.0.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.0
     pull_policy: missing
     environment:
     - SERVICE=scada_layout
@@ -179,8 +205,11 @@ services:
     - /gw/configs/frontend:/frontend
     - /gw/configs/conf/config.yml:/conf/config.yml
   tvsse-svc:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.26
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.0
     pull_policy: missing
     environment:
     - SERVICE=scada-tv-sse
@@ -214,8 +243,11 @@ services:
     links:
     - layout-tv-svc:layout-svc
   tv-svc:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.27
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:v2.2.0
     pull_policy: missing
     environment:
     - VITE_SSE_URL=http://${TV_HOST_URL}
@@ -224,7 +256,10 @@ services:
     - VITE_TV_SUBTITLE=${TV_SUBTITLE}
     - VITE_TV_LOGO=${TV_LOGO}
   monitor:
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.0.2
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.28
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.2.0
     restart: always
     environment:
       - SERVICE=monitor
@@ -257,7 +292,10 @@ services:
       - /gw/configs/backend/Monitor:/scada/conf
       - /gw/data/monitor:/scada/data
   register:
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/register:v2.0.0
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.29
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/register:v2.2.0
     restart: always
     ports:
       - 1502:1502
@@ -273,15 +311,21 @@ services:
       - /gw/configs/conf/config.yml:/etc/config.yml
       - /gw/data/register:/scada/data
   config-watcher:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.30
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:v2.2.0
     pull_policy: missing
     environment:
      - MQTT_BrokerURL=tcp://emqx:1883
      - RESTART_TOPIC=com/config-sync/restart
   config-sync:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.31
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:v2.2.0
     pull_policy: missing
     environment:
       - environment=${environment}
@@ -314,3 +358,10 @@ services:
       - /gw/configs/frontend:/scada/configs/frontend
       - /gw/configs/conf/config.yml:/scada/conf/config.yml
       - /gw/data/config-sync:/scada/data
+
+networks:
+  gateway_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.1.0/24
