@@ -216,8 +216,8 @@ services:
     - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
     volumes:
-    - ./configs/conf/config.yml:/etc/config.yml
-    - ./configs/backend/Proxy/proxies.yml:/etc/proxies.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/configs/backend/Proxy/proxies.yml:/etc/proxies.yml
     ports:
     - 502:502
   queue-svc:
@@ -256,6 +256,7 @@ services:
     - DIR=/etc/reports/
     - GRPC_PORT=${GRPC_PORT}
     - GRPC_REFLECT=${GRPC_REFLECT}
+    - INFLUX_QUERY_TIMEOUT=30s
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/reports/:/etc/reports/
@@ -358,6 +359,46 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/configs/conf/elec/influxdb_init.yml:/elec/influxdb_init.yml
     - /gw/data/ems:/scada/ems
+  enel-svc:
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/enelx:main
+    environment:
+    - USAGE=scada
+    - LOG_LEVEL=${LOG_LEVEL}
+    - LOG_TARGET=${LOG_TARGET}
+    - SERVICE=enelx
+    - ARGS=serve
+    - REDIS_HOST=redis:6379
+    - REDIS_DB="13
+    - CONFIGPATH=/etc/config.yml
+    - COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    - EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
+    - LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
+    volumes:
+    - /gw/configs/backend/Enel/config.yml:/etc/config.yml
+  statistics:
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/statistics:main
+    restart: always
+    environment:
+      - SERVICE=statistics
+      - ARGS=serve 
+      - CONFIG_PATH=/scada/conf/statistics.yaml
+      - LOG_TARGET=${LOG_TARGET}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - SQLITE_PATH=/scada/data/db
+      - COMMUNICATE_MOCK=false
+      - COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+      - COMMUNICATE_TIMEOUT=3s
+      - MOCK_INFLUX=false
+      - INFLUXDB_URL=${INFLUXDB_URL}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=statistics
+      - INFLUXDB_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+      - INFLUXDB_TELEGRAF_URL=http://telegraf:8080/telegraf
+    volumes:
+      - /gw/configs/conf/config.yml:/etc/config.yml
+      - /gw/configs/backend/Statistics:/scada/conf
+      - /gw/data/statistics:/scada/data
   web-svc:
     restart: always
     image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web:v2.0.0

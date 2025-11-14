@@ -1,0 +1,432 @@
+# IoTGateway
+services:
+# Infras
+  emqx:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.10
+    restart: always
+    image: emqx:5.4.1
+    pull_policy: missing
+    ports:
+    - 1883:1883
+    - 18083:18083
+    volumes:
+    - /gw/data/emqx:/opt/emqx/data
+    - /gw/etc/emqx:/opt/emqx/etc
+    - /gw/log/emqx:/opt/emqx/log
+  redis:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.11
+    restart: always
+    image: redis:alpine
+    pull_policy: missing
+    ports:
+    - 6379:6379
+    volumes:
+     - /gw/data/redis:/data
+    deploy:
+      resources:
+        reservations:
+          memory: 1G
+  influxdb:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.12
+    restart: always
+    image: influxdb:2.7-alpine
+    pull_policy: missing
+    ports:
+    - 8086:8086
+    environment:
+    - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_MODE}
+    - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
+    - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+    - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+    - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+    - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+    - INFLUXDB_URL=${INFLUXDB_URL}
+    volumes:
+      - /gw/data/influxdb:/var/lib/influxdb2:rw
+  telegraf:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.13
+    restart: always
+    image: telegraf:1.30-alpine
+    pull_policy: missing
+    depends_on:
+      - influxdb
+    environment:
+    - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_MODE}
+    - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
+    - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+    - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
+    - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
+    - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+    - INFLUXDB_URL=${INFLUXDB_URL}
+    volumes:
+      - /gw/configs/influxdb/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
+  nginx:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.14
+    restart: always
+    image: openresty/openresty:1.21.4.1-0-alpine
+    ports:
+    - 80:80
+    volumes:
+    - /gw/configs/frontend/Image:/var/www/html/image
+    - /gw/configs/nginx/sites-enabled:/etc/nginx/conf.d
+    - /gw/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
+# Gateway Components
+  com2mc:
+    networks:
+      gateway_network:
+        mac_address: ${MAC_ADDRESS}
+        ipv4_address: 172.20.1.21
+    restart: always
+    depends_on:
+      - emqx
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2mc:v2.2.0
+    pull_policy: missing
+    environment:
+      - GRPC_PORT=${GRPC_PORT}
+      - SERVICE=com2mc
+      - CONFIG_FILE=/scada/conf/config.yml
+      - MLM_CONF_PATH=/scada/conf/mlm/
+      - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+      - GRPC_REFLECT=${GRPC_REFLECT}
+      - MQTT_BrokerURL=tcp://emqx:1883
+      - ROUTINE_TOPIC=${TOPIC_ROUTINE_DATA}
+      - WRITE_EVENT_TOPIC=${TOPIC_WRITE_DATA}
+      - MQTT_Topic=com/routine/data&com/event/write-data
+      - MQTT_ThrottledQueue_Duration=30s
+      - MQTT_ClientID=com2mc
+      - MQTT_Qos=1
+      - MQTT_KeepAlive=30
+      - MQTT_ConnectRetryDelay=500
+      - MQTT_Group=scada
+      - MQTT_Debug=true
+      - MQTT_IsAuth=false
+      - MQTT_User=emq
+      - MQTT_Password=emqpassword
+      - MQTT_QueuePath=${MQTT_QueuePath}
+      - MQTT_Store_Enable=true
+      - MQTT_Store_Type=file
+      - MQTT_Store_Path=/scada/data/store
+      - MQTT_Gzip=false
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+    volumes:
+      - /gw/configs/backend/mlm:/scada/conf/mlm
+      - /gw/configs/conf/config.yml:/scada/conf/config.yml
+      - /gw/data/com2mc:/scada/data
+  communicate:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.22
+    restart: always
+    privileged: true
+    depends_on:
+      - emqx
+      - redis
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.2.0
+    pull_policy: missing
+    ports:
+    - 7080:7080
+    environment:
+      - environment=${environment}
+      - S6_KEEP_ENV=1
+      - GRPC_PORT=7080
+      - SERVICE=communicate
+      - MQTT_ClientID=communicate
+      - MQTT_Group=scada
+      - MQTT_QueuePath=${MQTT_QueuePath}
+      - CONFIG_FILE=/scada/conf/config.yml
+      - COM_CONF_PATH=/scada/conf/com/
+      - READ_DURATION=200ms
+      - WRITE_DURATION=500ms
+      - PUBLISH_DURATION=30s
+      - DATA_EXPIRE=5m
+      - EVENT_CHANGE_DATA_TOPIC=${TOPIC_CHANGE_DATA}
+      - EVENT_WRITE_DATA_TOPIC=${TOPIC_WRITE_DATA}
+      - EVENT_CONN_ERR_TOPIC=${TOPIC_CONNECT_ERR}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+      - MQTT_BrokerURL=${MQTT_BrokerURL}
+      - MQTT_Qos=${MQTT_Qos}
+      - MQTT_KeepAlive=${MQTT_KeepAlive}
+      - MQTT_ConnectRetryDelay=${MQTT_ConnectRetryDelay}
+      - MQTT_Debug=${MQTT_Debug}
+      - MQTT_IsAuth=${MQTT_IsAuth}
+      - MQTT_User=${MQTT_User}
+      - MQTT_Password=${MQTT_Password}
+      - MQTT_Gzip=${MQTT_Gzip}
+      - GRPC_REFLECT=${GRPC_REFLECT}
+    volumes:
+      - /gw/configs/backend/DataSource:/scada/conf/com
+      - /gw/configs/conf/config.yml:/scada/conf/config.yml
+      - /gw/data/communicate:/scada/data/queue
+      - /gw/log/communicate:/scada/data/log
+  timing:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.23
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:v2.2.0
+    pull_policy: missing
+    depends_on:
+    - communicate
+    environment:
+    - S6_KEEP_ENV=1
+    - SERVICE=timing
+    - CONFIG_FILE=/etc/config.yml
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    - TIMING_SETTING_FILE=/etc/timing.yml
+    - TIMING_DURATION=1h
+    - LOG_LEVEL=${LOG_LEVEL}
+    - GRPC_PORT=${GRPC_PORT}
+    - GRPC_REFLECT=${GRPC_REFLECT}
+    volumes:
+    - /gw/configs/backend/Cron/config.yml:/etc/timing.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
+  avg2display:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.24
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/avg2display:v2.2.0
+    pull_policy: missing
+    depends_on:
+    - communicate
+    environment:
+    - SERVICE=avg2display
+    - CONFIG_FILE=/etc/config.yml
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    - AVG_SETTING_FILE=/etc/avg_setting.yml
+    - CACHE_DB=avg2display
+    - AVG_DURATION=5s
+    - LOG_LEVEL=${LOG_LEVEL}
+    - GRPC_PORT=${GRPC_PORT}
+    - GRPC_REFLECT=${GRPC_REFLECT}
+    volumes:
+    - /gw/configs/backend/Cron/config.yml:/etc/avg_setting.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
+  layout-tv-svc:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.25
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.0
+    pull_policy: missing
+    environment:
+    - SERVICE=scada_layout
+    - CONFIG_FILE=/conf/config.yml
+    - DOWNLOAD_CONF_DIR=/frontend/
+    - GRPC_AUTH_ADDRESS=127.0.0.1:7092
+    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    - GRPC_PORT=${GRPC_PORT}
+    - GRPC_REFLECT=${GRPC_REFLECT}
+    - LOG_LEVEL=${LOG_LEVEL}
+    - LOG_TARGET=${LOG_TARGET}
+    - TV_MODE_ONLY=true
+    - COMM_TIME_OUT_DURATION=2.5s
+    - STATIC_IMAGE_PATH=/image
+    - GIN_MODE=${GIN_MODE}
+    - MOCK_AUTH=${MOCK_AUTH}
+    - API_DEBUG=${API_DEBUG}
+    - API_PORT=${API_PORT}
+    - TRUSTED_PROXIES=*
+    volumes:
+    - /gw/configs/frontend:/frontend
+    - /gw/configs/conf/config.yml:/conf/config.yml
+  tvsse-svc:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.26
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.0
+    pull_policy: missing
+    environment:
+    - SERVICE=scada-tv-sse
+    - CONFIG_FILE=/etc/config.yml
+    - GRPC_PORT=${GRPC_PORT}
+    - GRPC_REFLECT=${GRPC_REFLECT}
+    - TOPIC_CHANGE_DATA=${TOPIC_CHANGE_DATA}
+    - TOPIC_WRITE_DATA=${TOPIC_WRITE_DATA}
+    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
+    - MQTT_BrokerURL=${MQTT_BrokerURL}
+    - MQTT_ClientID=scada_tv
+    - MQTT_Qos=${MQTT_Qos}
+    - MQTT_KeepAlive=${MQTT_KeepAlive}
+    - MQTT_ConnectRetryDelay=${MQTT_ConnectRetryDelay}
+    - MQTT_Debug=false
+    - MQTT_IsAuth=${MQTT_IsAuth}
+    - MQTT_User=${MQTT_User}
+    - MQTT_Password=${MQTT_Password}
+    - MQTT_QueuePath=${MQTT_QueuePath}
+    - MQTT_Gzip=${MQTT_Gzip}
+    - GIN_MODE=${GIN_MODE}
+    - API_PORT=${API_PORT}
+    - MOCK_AUTH=${MOCK_AUTH}
+    - API_DEBUG=${API_DEBUG}
+    - TRUSTED_PROXIES=*
+    - LOG_LEVEL=${LOG_LEVEL}
+    - LOG_TARGET=${LOG_TARGET}
+    volumes:
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/data/tvsse:/scada/data/queue'
+    links:
+    - layout-tv-svc:layout-svc
+  tv-svc:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.27
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:v2.2.0
+    pull_policy: missing
+    environment:
+    - VITE_SSE_URL=http://${TV_HOST_URL}
+    - VITE_LAYOUT_URL=http://${TV_HOST_URL}/igw/tv
+    - VITE_TV_TITLE=${TV_TITLE}
+    - VITE_TV_SUBTITLE=${TV_SUBTITLE}
+    - VITE_TV_LOGO=${TV_LOGO}
+  monitor:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.28
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.2.0
+    restart: always
+    environment:
+      - SERVICE=monitor
+      - DEFAULT_DURATION_PERIODIC=1m
+      - ALERT_CHECK_DURATION=30s
+      - OFFSET_PROCESS_DURATION=20s
+      - FIELD_PULSE_PROCESS_DURATION=10s
+      - SQL_DB_PATH=/scada/data/monitor.db
+      - PERIODIC_SEND_CONF_PATH=/scada/conf/periodicSend.yaml
+      - ALERT_CONF_PATH=/scada/conf/alertReport.yaml
+      - OFFSET_CONF_PATH=/scada/conf/offset.yaml
+      - FIELD_PULSE_CONF_PATH=/scada/conf/fieldPulse.yaml
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+      - CONFIG_FILE=/etc/config.yml
+      - GRPC_COMM_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+      - MQTT_Topic=${TOPIC_CHANGE_DATA}
+      - MQTT_BrokerURL=${MQTT_BrokerURL}
+      - MQTT_ClientID=alert-monitor
+      - MQTT_Qos=${MQTT_Qos}
+      - MQTT_KeepAlive=${MQTT_KeepAlive}
+      - MQTT_ConnectRetryDelay=${MQTT_ConnectRetryDelay}
+      - MQTT_Group=scada
+      - MQTT_Debug=${MQTT_Debug}
+      - MQTT_IsAuth=${MQTT_IsAuth}
+      - MQTT_User=${MQTT_User}
+      - MQTT_Password=${MQTT_Password}
+    volumes:
+      - /gw/configs/conf/config.yml:/etc/config.yml
+      - /gw/configs/backend/Monitor:/scada/conf
+      - /gw/data/monitor:/scada/data
+  register:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.29
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/register:v2.2.0
+    restart: always
+    ports:
+      - 1502:1502
+    environment:
+      - SERVICE=register
+      - SQL_DB_PATH=/scada/data/register.db
+      - MB_TIMEOUT=5m
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+      - CONFIG_FILE=/etc/config.yml
+      - MODBUS_PORT=1502
+    volumes:
+      - /gw/configs/conf/config.yml:/etc/config.yml
+      - /gw/data/register:/scada/data
+  config-watcher:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.30
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher:v2.2.0
+    pull_policy: missing
+    environment:
+     - MQTT_BrokerURL=tcp://emqx:1883
+     - RESTART_TOPIC=com/config-sync/restart
+  config-sync:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.31
+    restart: always
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:v2.2.0
+    pull_policy: missing
+    environment:
+      - environment=${environment}
+      - CONFIGURATION_TOKEN=${CONFIGURATION_TOKEN}
+      - VERSION_CONFIG_PATH=/scada/data/store
+      - MAX_FILE_COUNT=10
+      - GRPC_CONFIGURATION_ADDRESS=rpc.hvac-cloud.org:81
+      - SERVICE=config-sync
+      - CONFIG_FILE=/scada/conf/config.yml
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+      - MQTT_BrokerURL=${MQTT_BrokerURL}
+      - MQTT_ClientID=config-sync
+      - MQTT_Qos=2
+      - MQTT_Topic=mock_topic
+      - MQTT_KeepAlive=${MQTT_KeepAlive}
+      - MQTT_ConnectRetryDelay=${MQTT_ConnectRetryDelay}
+      - MQTT_Group=scada
+      - MQTT_Debug=${MQTT_Debug}
+      - MQTT_IsAuth=${MQTT_IsAuth}
+      - MQTT_User=${MQTT_User}
+      - MQTT_Password=${MQTT_Password}
+      - MQTT_QueuePath=/scada/data/queue
+      - MQTT_Gzip=${MQTT_Gzip}
+      - FRONTEND_CONFIG_PATH=/scada/configs/frontend
+      - BACKEND_CONFIG_PATH=/scada/configs/backend
+      - RESTART_MQTT_TOPIC=com/config-sync/restart
+    volumes:
+      - /gw/configs/backend:/scada/configs/backend
+      - /gw/configs/frontend:/scada/configs/frontend
+      - /gw/configs/conf/config.yml:/scada/conf/config.yml
+      - /gw/data/config-sync:/scada/data
+  ## statistics service
+  statistics:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.41
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/statistics:v2.2.0
+    restart: always
+    environment:
+      - SERVICE=statistics
+      - ARGS=serve 
+      - CONFIG_PATH=/scada/conf/statistics.yml
+      - LOG_TARGET=${LOG_TARGET}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - SQLITE_PATH=/scada/data/db
+      - COMMUNICATE_MOCK=false
+      - COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+      - COMMUNICATE_TIMEOUT=3s
+      - MOCK_INFLUX=false
+      - INFLUXDB_URL=${INFLUXDB_URL}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=statistics
+      - INFLUXDB_TOKEN=${INFLUXDB_ADMIN_TOKEN}
+      - INFLUXDB_TELEGRAF_URL=http://telegraf:8080/telegraf
+    volumes:
+      - /gw/configs/conf/config.yml:/etc/config.yml
+      - /gw/configs/backend/Statistics:/scada/conf
+      - /gw/data/statistics:/scada/data
+## Networks
+networks:
+  gateway_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.1.0/24
