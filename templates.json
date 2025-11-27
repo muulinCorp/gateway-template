@@ -986,21 +986,6 @@
     {
       "id": 5,
       "type": 3,
-      "title": "IoTMbslave",
-      "description": "For IoTGateway ModbusSalve Services",
-      "note": "Use for IoTGateway service",
-      "categories": ["GW"],
-      "platform": "linux",
-      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/registry.png",
-      "repository": {
-        "url": "https://github.com/muulinCorp/gateway-template",
-        "stackfile": "stacks/mbslave/docker-stack.yaml"
-      }
-    },
-
-    {
-      "id": 6,
-      "type": 3,
       "title": "IoTGateway Statistics",
       "description": "For IoTGateway Gateway With Statistics Services",
       "note": "Use for IoTGateway AllinOne service",
@@ -1270,6 +1255,20 @@
           "default": "http://influxdb:8086"
         }
       ]
+    },
+    {
+      "id": 6,
+      "type": 3,
+      "title": "IoTRegister",
+      "description": "For IoTGateway Register Services",
+      "note": "Use for IoTGateway service",
+      "categories": ["GW"],
+      "platform": "linux",
+      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/registry.png",
+      "repository": {
+        "url": "https://github.com/muulinCorp/gateway-template",
+        "stackfile": "stacks/register/docker-stack.yaml"
+      }
     }
   ]
 }

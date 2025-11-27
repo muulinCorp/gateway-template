@@ -94,7 +94,7 @@ services:
     depends_on:
       - emqx
       - redis
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.2.1
     pull_policy: missing
     ports:
     - 7080:7080
@@ -181,7 +181,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.25
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.1
     pull_policy: missing
     environment:
     - SERVICE=scada_layout

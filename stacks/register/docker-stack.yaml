@@ -1,9 +1,12 @@
 services:
   register:
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/register:v2.0.0
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.29
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/register:v2.2.0
     restart: always
     ports:
-      - 502:1502
+      - 1502:1502
     environment:
       - SERVICE=register
       - SQL_DB_PATH=/scada/data/register.db
@@ -15,3 +18,10 @@ services:
     volumes:
       - /gw/configs/conf/config.yml:/etc/config.yml
       - /gw/data/register:/scada/data
+## Networks
+networks:
+  gateway_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.1.0/24

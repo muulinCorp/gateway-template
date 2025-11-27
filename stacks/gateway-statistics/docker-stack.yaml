@@ -132,7 +132,7 @@ services:
     depends_on:
       - emqx
       - redis
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.2.1
     pull_policy: missing
     ports:
     - 7080:7080
@@ -219,7 +219,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.25
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.1
     pull_policy: missing
     environment:
     - SERVICE=scada_layout
@@ -305,6 +305,7 @@ services:
       - ALERT_CHECK_DURATION=30s
       - OFFSET_PROCESS_DURATION=20s
       - FIELD_PULSE_PROCESS_DURATION=10s
+      - ERROR_CHECK_DURATION=30s
       - SQL_DB_PATH=/scada/data/monitor.db
       - PERIODIC_SEND_CONF_PATH=/scada/conf/periodicSend.yaml
       - ALERT_CONF_PATH=/scada/conf/alertReport.yaml
