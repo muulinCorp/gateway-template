@@ -175,7 +175,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.23
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:v2.2.1
     pull_policy: missing
     depends_on:
     - communicate
@@ -297,7 +297,7 @@ services:
     networks:
       gateway_network:
         ipv4_address: 172.20.1.28
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.2.1
     restart: always
     environment:
       - SERVICE=monitor
