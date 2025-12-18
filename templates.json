@@ -212,6 +212,11 @@
           "preset": true
         },
         {
+          "name": "MAC_ADDRESS",
+          "label": "Mac Address",
+          "default": "aa:bb:cc:dd:ee"
+        },
+        {
           "name": "INFLUXDB_MODE",
           "label": "Influxdb Mode",
           "default": "setup",
