@@ -99,7 +99,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.52
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/auth:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/auth:dev
     environment:
     - S6_KEEP_ENV=1
     - SERVICE=auth
@@ -161,7 +161,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.54
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.2
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
@@ -188,7 +188,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.55
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:v2.2.1
     depends_on:
     - auth-svc
     - layout-svc
@@ -563,7 +563,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.23
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing:v2.2.2
     pull_policy: missing
     depends_on:
     - communicate
@@ -607,7 +607,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.25
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.2
     pull_policy: missing
     environment:
     - SERVICE=scada_layout

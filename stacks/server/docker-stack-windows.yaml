@@ -139,7 +139,7 @@ services:
     - D:\gw\configs\conf\config.yml:/etc/config.yml
   layout-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.2
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
@@ -163,7 +163,7 @@ services:
     - D:\gw\configs\conf\config.yml:/etc/config.yml
   com2scada-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:v2.2.1
     depends_on:
     - auth-svc
     - layout-svc
