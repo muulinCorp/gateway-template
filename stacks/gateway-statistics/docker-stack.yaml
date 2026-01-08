@@ -219,7 +219,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.25
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.2
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.3
     pull_policy: missing
     environment:
     - SERVICE=scada_layout

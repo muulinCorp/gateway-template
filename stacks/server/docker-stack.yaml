@@ -139,7 +139,7 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
   layout-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.2
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.3
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
@@ -202,7 +202,7 @@ services:
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
   mbproxy-svc:
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbproxy:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbproxy:v2.2.1
     depends_on:
     - com2scada-svc
     - event-svc
@@ -262,7 +262,7 @@ services:
     - /gw/data/reports/:/etc/reports/
   event-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/event:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/event:v2.2.1
     depends_on:
     - auth-svc
     environment:
@@ -314,7 +314,7 @@ services:
     - /gw/data/rubase/:/etc/rubase/
   alarm-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/alarm:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/alarm:v2.2.1
     depends_on:
     - auth-svc
     - event-svc

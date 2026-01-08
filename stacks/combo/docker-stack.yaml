@@ -75,7 +75,6 @@ services:
     ports:
     - 80:80
     depends_on:
-    - gateway-svc
     - files-svc
     - web-svc
     - com2scada-svc
@@ -161,7 +160,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.54
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.2
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.3
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
@@ -233,7 +232,7 @@ services:
     networks:
       gateway_network:
         ipv4_address: 172.20.1.56
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbproxy:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/mbproxy:v2.2.1
     depends_on:
     - com2scada-svc
     - event-svc
@@ -247,8 +246,8 @@ services:
     - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
     - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
     volumes:
-    - ./configs/conf/config.yml:/etc/config.yml
-    - ./configs/backend/Proxy/proxies.yml:/etc/proxies.yml
+    - /gw/configs/conf/config.yml:/etc/config.yml
+    - /gw/configs/backend/Proxy/proxies.yml:/etc/proxies.yml
     ports:
     - 502:502
   queue-svc:
@@ -302,7 +301,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.59
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/event:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/event:v2.2.1
     depends_on:
     - auth-svc
     environment:
@@ -360,7 +359,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.61
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/alarm:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/alarm:v2.2.1
     depends_on:
     - auth-svc
     - event-svc
@@ -381,7 +380,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.62
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:v2.0.0
     environment:
     - USAGE=scada
     - LOG_LEVEL=${LOG_LEVEL}
@@ -468,7 +467,7 @@ services:
 # Gateway Components
   com2mc:
     networks:
-      default:
+      gateway_network:
         mac_address: ${MAC_ADDRESS}
         ipv4_address: 172.20.1.21
     restart: always
@@ -607,7 +606,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.25
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.2
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.3
     pull_policy: missing
     environment:
     - SERVICE=scada_layout
@@ -780,3 +779,10 @@ services:
       - /gw/configs/frontend:/scada/configs/frontend
       - /gw/configs/conf/config.yml:/scada/conf/config.yml
       - /gw/data/config-sync:/scada/data
+## Networks
+networks:
+  gateway_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.1.0/24
