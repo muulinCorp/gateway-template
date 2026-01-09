@@ -88,13 +88,16 @@ services:
     - rubase-alert-svc
   auth-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/auth:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/auth:v2.2.1
+    pull_policy: missing
     environment:
     - S6_KEEP_ENV=1
     - SERVICE=auth
     - USAGE=scada
     - Auth_Code=42697846
     - CONFIG_FILE=/etc/config.yml
+    - ROLE_CONFIG_FILE=/conf/roles.yml
+    - API_PERM_CONFIG_FILE=/conf/apiPermission.yml
     - LOG_LEVEL=${LOG_LEVEL}
     - LOG_TARGET=${LOG_TARGET}
     - GRPC_PORT=${GRPC_PORT}
@@ -108,10 +111,11 @@ services:
     volumes:
     - D:\gw\data\sql/:/sql/
     - D:\gw\configs\conf\config.yml:/etc/config.yml
+    - D:\gw\configs\backend\Auth:/conf
     - D:\gw\configs\conf\cert:/cert
   schedule-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/schedule:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/schedule:v2.2.0
     depends_on:
     - auth-svc
     environment:
@@ -163,7 +167,7 @@ services:
     - D:\gw\configs\conf\config.yml:/etc/config.yml
   com2scada-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/com2scada:v2.2.2
     depends_on:
     - auth-svc
     - layout-svc
@@ -222,11 +226,12 @@ services:
     - 502:502
   queue-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/queue:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/queue:v2.2.2
     environment:
     - SERVICE=scada-queue
     - QUEUE_PATH=/etc/que/
     - CONFIG_FILE=/etc/config.yml
+    - PERIODIC_SEND_DURATION=30s
     - GIN_MODE=${GIN_MODE}
     - API_PORT=${API_PORT}
     - MOCK_AUTH=${MOCK_AUTH}
@@ -240,7 +245,7 @@ services:
     - D:\gw\data\que:/etc/que
   report-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/report:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/report:v2.2.1
     environment:
     - SERVICE=scada-report
     - USAGE=scada
@@ -331,7 +336,7 @@ services:
     - D:\gw\configs\conf\config.yml:/etc/config.yml
   ems-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:v2.2.1
     environment:
     - USAGE=scada
     - LOG_LEVEL=${LOG_LEVEL}
@@ -368,7 +373,7 @@ services:
     - VITE_LAYOUT_URL=${HOST_URL}/web/layout/tv
   tvsse-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.1
     pull_policy: missing
     environment:
     - SERVICE=scada-tv-sse

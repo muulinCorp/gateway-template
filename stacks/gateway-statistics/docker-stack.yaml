@@ -247,7 +247,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.26
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.1
     pull_policy: missing
     environment:
     - SERVICE=scada-tv-sse
