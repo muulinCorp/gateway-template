@@ -394,7 +394,7 @@ services:
       - /gw/data/statistics:/scada/data
   web-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web:v2.0.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web:v2.2.1
     pull_policy: missing
     environment:
     - VITE_SSE_URL=${HOST_URL}

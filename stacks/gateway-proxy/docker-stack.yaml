@@ -1,4 +1,4 @@
-# IoTCombo
+# IoTProxy
 services:
 # Infras
   emqx:
@@ -30,23 +30,6 @@ services:
       resources:
         reservations:
           memory: 1G
-  influxdb:
-    networks:
-      gateway_network:
-        ipv4_address: 172.20.1.12
-    restart: always
-    image: influxdb:2.7-alpine
-    pull_policy: missing
-    environment:
-    - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_MODE}
-    - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
-    - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
-    - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
-    - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
-    - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
-    - INFLUXDB_URL=${INFLUXDB_URL}
-    volumes:
-      - /gw/data/influxdb:/var/lib/influxdb2:rw
   telegraf:
     networks:
       gateway_network:
@@ -54,8 +37,6 @@ services:
     restart: always
     image: telegraf:1.30-alpine
     pull_policy: missing
-    depends_on:
-      - influxdb
     environment:
     - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_MODE}
     - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
@@ -74,25 +55,12 @@ services:
     image: openresty/openresty:1.21.4.1-0-alpine
     ports:
     - 80:80
-    depends_on:
-    - files-svc
-    - web-svc
-    - com2scada-svc
     environment:
     - TV_HOST_URL=${TV_HOST_URL}
     volumes:
     - /gw/configs/frontend/Image:/var/www/html/image
     - /gw/configs/nginx/sites-enabled:/etc/nginx/conf.d
     - /gw/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
-# Server Components
-  files-svc:
-    networks:
-      gateway_network:
-        ipv4_address: 172.20.1.51
-    restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/files:v2.2.0
-    volumes:
-    - /gw/data/reports/report:/reports
   auth-svc:
     networks:
       gateway_network:
@@ -272,31 +240,6 @@ services:
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/que/:/etc/que/
-  report-svc:
-    networks:
-      gateway_network:
-        ipv4_address: 172.20.1.58
-    restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/report:v2.2.1
-    environment:
-    - SERVICE=scada-report
-    - USAGE=scada
-    - CONFIG_FILE=/etc/config.yml
-    - RESOURCE_PATH=/rsrc/
-    - GIN_MODE=${GIN_MODE}
-    - API_PORT=${API_PORT}
-    - MOCK_AUTH=${MOCK_AUTH}
-    - API_DEBUG=${IS_DEBUG}
-    - TRUSTED_PROXIES=${TRUSTED_PROXIES}
-    - GRPC_Auth_Address=${GRPC_AUTH_ADDRESS}
-    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
-    - DIR=/etc/reports/
-    - GRPC_PORT=${GRPC_PORT}
-    - GRPC_REFLECT=${GRPC_REFLECT}
-    - INFLUX_QUERY_TIMEOUT=30s
-    volumes:
-    - /gw/configs/conf/config.yml:/etc/config.yml
-    - /gw/data/reports/:/etc/reports/
   event-svc:
     networks:
       gateway_network:
@@ -322,112 +265,6 @@ services:
     volumes:
     - /gw/configs/conf/config.yml:/etc/config.yml
     - /gw/data/sql/:/sql/
-  rubase-alert-svc:
-    networks:
-      gateway_network:
-        ipv4_address: 172.20.1.60
-    restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/rubase:v2.2.0
-    depends_on:
-    - auth-svc
-    - event-svc
-    - report-svc
-    - com2scada-svc
-    environment:
-    - USAGE=scada
-    - LOG_LEVEL=${LOG_LEVEL}
-    - LOG_TARGET=${LOG_TARGET}
-    - SERVICE=rubase_alert
-    - CONFIG_FILE=/etc/config.yml
-    - CHECK_CYCLE=1m
-    - ALERT_CONFIG_PATH=/etc/rubase/
-    - GIN_MODE=${GIN_MODE}
-    - API_PORT=${API_PORT}
-    - MOCK_AUTH=false
-    - API_DEBUG=${IS_DEBUG}
-    - TRUSTED_PROXIES=${TRUSTED_PROXIES}
-    - GRPC_PORT=${GRPC_PORT}
-    - GRPC_REFLECT=${GRPC_REFLECT}
-    - GRPC_Auth_Address=${GRPC_AUTH_ADDRESS}
-    - GRPC_COM2SCADA_ADDRESS=${GRPC_COM2SCADA_ADDRESS}
-    - GRPC_REPORT_ADDRESS=${GRPC_REPORT_ADDRESS}
-    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
-    volumes:
-    - /gw/configs/conf/config.yml:/etc/config.yml
-    - /gw/data/rubase/:/etc/rubase/
-  alarm-svc:
-    networks:
-      gateway_network:
-        ipv4_address: 172.20.1.61
-    restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/alarm:v2.2.1
-    depends_on:
-    - auth-svc
-    - event-svc
-    - layout-svc
-    environment:
-    - USAGE=scada
-    - LOG_LEVEL=${LOG_LEVEL}
-    - LOG_TARGET=${LOG_TARGET}
-    - SERVICE=alarm
-    - CONFIG_FILE=/etc/config.yml
-    - GRPC_COM2SCADA_ADDRESS=${GRPC_COM2SCADA_ADDRESS}
-    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
-    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
-    volumes:
-    - /gw/configs/conf/config.yml:/etc/config.yml
-  ems-svc:
-    networks:
-      gateway_network:
-        ipv4_address: 172.20.1.62
-    restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:v2.2.1
-    environment:
-    - USAGE=scada
-    - LOG_LEVEL=${LOG_LEVEL}
-    - LOG_TARGET=${LOG_TARGET}
-    - SERVICE=electricity-demand
-    - CONFIG_FILE=/etc/config.yml
-    - EMS_CONFIG_PATH=/scada/ems
-    - GRPC_Auth_Address=${GRPC_AUTH_ADDRESS}
-    - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
-    - GRPC_COM2SCADA_ADDRESS=${GRPC_COM2SCADA_ADDRESS}
-    - GRPC_REPORT_ADDRESS=${GRPC_REPORT_ADDRESS}
-    - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
-    - GRPC_EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
-    - INFLUXDB_INIT_FILE=/elec/influxdb_init.yml
-    - INFLUXDB_BUCKET=electricity-demand
-    - INFLUXDB_REPORT_BUCKET=electricity-demand-report
-    - INFLUXDB_MEASUREMENT=use-electricity
-    - API_PORT=${API_PORT}
-    - API_DEBUG=${API_DEBUG}
-    - MOCK_AUTH=false
-    - GIN_MODE=${GIN_MODE}
-    - TRUSTED_PROXIES=${TRUSTED_PROXIES}
-    volumes:
-    - /gw/configs/conf/config.yml:/etc/config.yml
-    - /gw/configs/conf/elec/influxdb_init.yml:/elec/influxdb_init.yml
-    - /gw/data/ems:/scada/ems
-  # enel-svc:
-  #   networks:
-  #     gateway_network:
-  #       ipv4_address: 172.20.1.63
-  #   restart: always
-  #   image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/enelx:v2.2.0
-  #   environment:
-  #   - USAGE=scada
-  #   - LOG_LEVEL=${LOG_LEVEL}
-  #   - LOG_TARGET=${LOG_TARGET}
-  #   - SERVICE=enelx
-  #   - ARGS=serve
-  #   - REDIS_HOST=redis:6379
-  #   - REDIS_DB="13
-  #   - CONFIGPATH=/etc/config.yml
-  #   - COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
-  #   - EVENT_ADDRESS=${GRPC_EVENT_ADDRESS}
-  #   - LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
-  #   volumes:
-  #   - /gw/configs/backend/Enel/config.yml:/etc/config.yml
   statistics:
     networks:
       gateway_network:
@@ -456,17 +293,6 @@ services:
       - /gw/configs/backend/Statistics/statistics.yml:/scada/conf/statistics.yml
       - /gw/configs/backend/Cron/fieldRefresh.yml:/scada/conf/fieldRefresh.yml
       - /gw/data/statistics:/scada/data
-  web-svc:
-    networks:
-      gateway_network:
-        ipv4_address: 172.20.1.64
-    restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web:v2.2.1
-    pull_policy: missing
-    environment:
-    - VITE_SSE_URL=${HOST_URL}
-    - VITE_API_HOST=${HOST_URL}/web
-    - VITE_LAYOUT_URL=${HOST_URL}/web/layout/tv
 # Gateway Components
   com2mc:
     networks:

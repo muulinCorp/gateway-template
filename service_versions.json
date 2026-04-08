@@ -13,7 +13,7 @@
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand": "v2.2.1",
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/enelx": "v2.2.0",
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/statistics": "v2.2.1",
-    "asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web": "v2.2.0",
+    "asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/web": "v2.2.1",
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2mc": "v2.2.0",
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate": "v2.2.1",
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/timing": "v2.2.2",
