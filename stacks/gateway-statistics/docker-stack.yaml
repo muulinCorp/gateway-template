@@ -30,25 +30,6 @@ services:
       resources:
         reservations:
           memory: 1G
-  influxdb:
-    networks:
-      gateway_network:
-        ipv4_address: 172.20.1.12
-    restart: always
-    image: influxdb:2.7-alpine
-    pull_policy: missing
-    ports:
-    - 8086:8086
-    environment:
-    - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_MODE}
-    - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
-    - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
-    - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG}
-    - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET}
-    - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_ADMIN_TOKEN}
-    - INFLUXDB_URL=${INFLUXDB_URL}
-    volumes:
-      - /gw/data/influxdb:/var/lib/influxdb2:rw
   telegraf:
     networks:
       gateway_network:
@@ -56,8 +37,6 @@ services:
     restart: always
     image: telegraf:1.30-alpine
     pull_policy: missing
-    depends_on:
-      - influxdb
     environment:
     - DOCKER_INFLUXDB_INIT_MODE=${INFLUXDB_MODE}
     - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME}
@@ -96,6 +75,7 @@ services:
       - SERVICE=com2mc
       - CONFIG_FILE=/scada/conf/config.yml
       - MLM_CONF_PATH=/scada/conf/mlm/
+      - JOB_DURATION=30m
       - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
       - GRPC_REFLECT=${GRPC_REFLECT}
       - MQTT_BrokerURL=tcp://emqx:1883
@@ -150,6 +130,7 @@ services:
       - WRITE_DURATION=500ms
       - PUBLISH_DURATION=30s
       - DATA_EXPIRE=5m
+      - DEFAULT_BAUD_RATE=9600
       - EVENT_CHANGE_DATA_TOPIC=${TOPIC_CHANGE_DATA}
       - EVENT_WRITE_DATA_TOPIC=${TOPIC_WRITE_DATA}
       - EVENT_CONN_ERR_TOPIC=${TOPIC_CONNECT_ERR}
@@ -297,7 +278,7 @@ services:
     networks:
       gateway_network:
         ipv4_address: 172.20.1.28
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.2.2
     restart: always
     environment:
       - SERVICE=monitor

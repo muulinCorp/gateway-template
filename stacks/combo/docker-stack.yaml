@@ -483,6 +483,7 @@ services:
       - SERVICE=com2mc
       - CONFIG_FILE=/scada/conf/config.yml
       - MLM_CONF_PATH=/scada/conf/mlm/
+      - JOB_DURATION=30m
       - GRPC_COMMUNICATE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
       - GRPC_REFLECT=${GRPC_REFLECT}
       - MQTT_BrokerURL=tcp://emqx:1883
@@ -540,6 +541,7 @@ services:
       - WRITE_DURATION=500ms
       - PUBLISH_DURATION=30s
       - DATA_EXPIRE=5m
+      - DEFAULT_BAUD_RATE=9600
       - EVENT_CHANGE_DATA_TOPIC=${TOPIC_CHANGE_DATA}
       - EVENT_WRITE_DATA_TOPIC=${TOPIC_WRITE_DATA}
       - EVENT_CONN_ERR_TOPIC=${TOPIC_CONNECT_ERR}
