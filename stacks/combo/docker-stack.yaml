@@ -685,7 +685,7 @@ services:
     networks:
       gateway_network:
         ipv4_address: 172.20.1.28
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor:v2.2.2
     restart: always
     environment:
       - SERVICE=monitor
