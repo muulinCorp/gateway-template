@@ -20,12 +20,13 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.11
     restart: always
-    image: redis:alpine
+    image: valkey/valkey:9-alpine3.23
     pull_policy: missing
     ports:
     - 6379:6379
     volumes:
      - /gw/data/redis:/data
+    command: valkey-server --save 1800 1 --maxmemory 800mb --maxmemory-policy allkeys-lru
     deploy:
       resources:
         reservations:
