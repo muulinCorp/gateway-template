@@ -295,6 +295,26 @@ services:
       - /gw/configs/backend/Cron/fieldRefresh.yml:/scada/conf/fieldRefresh.yml
       - /gw/data/statistics:/scada/data
 # Gateway Components
+  com2cs:
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.20
+    restart: always
+    depends_on:
+      - emqx
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/com2cs:main
+    pull_policy: missing
+    environment:
+      - ARGS=serve 
+      - SERVICE=com2cs
+      - CONFIG_PATH=/scada/conf/mqttBridge.yml
+      - TICKER_RATE=30s
+      - COMMUNICATE_SERVICE_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+      - COMMUNICATE_SERVICE_TIMEOUT=5s
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_TARGET=${LOG_TARGET}
+    volumes:
+      - /gw/configs/backend/MqttBridge:/scada/conf
   com2mc:
     networks:
       gateway_network:
@@ -578,7 +598,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.31
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync:v2.2.1
     pull_policy: missing
     environment:
       - environment=${environment}

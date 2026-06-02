@@ -24,5 +24,5 @@
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/monitor": "v2.2.2",
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/register": "v2.2.0",
     "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/configwatcher": "v2.2.0",
-    "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync": "v2.2.0"
+    "asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/config-sync": "v2.2.1"
 }
