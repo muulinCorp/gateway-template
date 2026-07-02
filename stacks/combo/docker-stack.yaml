@@ -161,7 +161,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.54
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.3
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.4
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
@@ -632,7 +632,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.25
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.3
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.4
     pull_policy: missing
     environment:
     - SERVICE=scada_layout
@@ -694,7 +694,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.27
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:v2.2.0
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:v2.2.1
     pull_policy: missing
     environment:
     - VITE_SSE_URL=http://${TV_HOST_URL}

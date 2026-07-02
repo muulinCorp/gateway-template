@@ -132,7 +132,7 @@ services:
     - /gw/configs/conf/config.yml:/etc/config.yml
   layout-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.3
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.4
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
