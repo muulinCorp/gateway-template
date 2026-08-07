@@ -129,7 +129,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.54
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.4
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.5
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
@@ -370,7 +370,7 @@ services:
     depends_on:
       - emqx
       - redis
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/communicate:v2.2.4
     pull_policy: missing
     ports:
     - 7080:7080
@@ -458,7 +458,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.25
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.4
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.5
     pull_policy: missing
     environment:
     - SERVICE=scada_layout
@@ -486,7 +486,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.26
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.3
     pull_policy: missing
     environment:
     - SERVICE=scada-tv-sse
@@ -496,6 +496,9 @@ services:
     - TOPIC_CHANGE_DATA=${TOPIC_CHANGE_DATA}
     - TOPIC_WRITE_DATA=${TOPIC_WRITE_DATA}
     - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
+    - GRPC_COMM_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    - GRPC_COMM_TIMEOUT=4s
+    - SET_FIELDS_SEND_TICKER=30s
     - MQTT_BrokerURL=${MQTT_BrokerURL}
     - MQTT_ClientID=scada_tv
     - MQTT_Qos=${MQTT_Qos}
@@ -520,7 +523,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.27
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tv:v2.2.2
     pull_policy: missing
     environment:
       - VITE_SSE_URL=http://${TV_HOST_URL}

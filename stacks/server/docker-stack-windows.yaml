@@ -144,7 +144,7 @@ services:
     - D:\gw\configs\conf\config.yml:/etc/config.yml
   layout-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.4
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/layout:v2.2.5
     environment:
     - SERVICE=scada_layout
     - CONFIG_FILE=/etc/config.yml
@@ -374,7 +374,7 @@ services:
     - VITE_LAYOUT_URL=${HOST_URL}/web/layout/tv
   tvsse-svc:
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotgw/tvsse:v2.2.3
     pull_policy: missing
     environment:
     - SERVICE=scada-tv-sse
@@ -383,6 +383,9 @@ services:
     - GRPC_REFLECT=${GRPC_REFLECT}
     - TOPIC_CHANGE_DATA=${TOPIC_CHANGE_DATA}
     - GRPC_LAYOUT_ADDRESS=${GRPC_LAYOUT_ADDRESS}
+    - GRPC_COMM_ADDRESS=${GRPC_COMMUNICATE_ADDRESS}
+    - GRPC_COMM_TIMEOUT=4s
+    - SET_FIELDS_SEND_TICKER=30s
     - MQTT_BrokerURL=${MQTT_BrokerURL}
     - MQTT_ClientID=scada_tv
     - MQTT_Qos=${MQTT_Qos}
