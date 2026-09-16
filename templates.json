@@ -505,6 +505,26 @@
           "default": "aa:bb:cc:dd:ee"
         },
         {
+          "name": "INFLUXDB_ORG",
+          "label": "Influxdb Orgnization",
+          "default": "muulin"
+        },
+        {
+          "name": "INFLUXDB_BUCKET",
+          "label": "Influxdb Bucket",
+          "default": "datas"
+        },
+        {
+          "name": "INFLUXDB_ADMIN_TOKEN",
+          "label": "Influxdb Admin Token",
+          "default": "mytoken"
+        },
+        {
+          "name": "INFLUXDB_URL",
+          "label": "Influxdb URL",
+          "default": "http://victoriametrics:8428"
+        },
+        {
           "name": "CONFIGURATION_TOKEN",
           "label": "Configuration Token",
           "default": ""
