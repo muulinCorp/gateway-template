@@ -32,16 +32,19 @@ services:
         reservations:
           memory: 1G
   victoriametrics:
-    container_name: victoriametrics
+    networks:
+      gateway_network:
+        ipv4_address: 172.20.1.12
+    restart: always
     image: victoriametrics/victoria-metrics:latest
+    pull_policy: missing
     ports:
       - "8428:8428"
     volumes:
-      - /gw/data/vmdata:/storage
+      - /raid-data/vmdata:/storage
     command:
       - "--storageDataPath=/storage"
       - "--retentionPeriod=750d"
-    restart: always
   telegraf:
     networks:
       gateway_network:
@@ -264,7 +267,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.58
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/report:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/report:v3.0.0
     environment:
     - SERVICE=scada-report
     - USAGE=scada
@@ -368,7 +371,7 @@ services:
       gateway_network:
         ipv4_address: 172.20.1.62
     restart: always
-    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:v2.2.1
+    image: asia-east1-docker.pkg.dev/muulin-universal/ml-iotsrv/elec-demand:v3.0.0
     environment:
     - USAGE=scada
     - LOG_LEVEL=${LOG_LEVEL}
