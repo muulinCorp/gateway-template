@@ -528,6 +528,16 @@
           "name": "CONFIGURATION_TOKEN",
           "label": "Configuration Token",
           "default": ""
+        },
+        {
+          "name": "PROMETHEUS_URL",
+          "label": "Prometheus URL",
+          "default": "http://victoriametrics:8428"
+        },
+        {
+          "name": "PROMETHEUS_QUERY_TIMEOUT",
+          "label": "Prometheus Query Timeout",
+          "default": "30s"
         }
       ]
     },
